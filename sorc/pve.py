@@ -17,15 +17,10 @@ def calamity(context, direction, state):
     
     return state, time.time()
 
-def pve(context, last_cast, state):
-    if prime_claws_of_darkness.ready():
-        prime_claws_of_darkness.cast(context)
-    
-    return state
 # State 0 = Awakening
 # State 1 = Pre-Awak
 # State 2 = Unsure
-def pvez(context, last_cast, state):
+def pve(context, last_cast, state):
     # Unsure what state we are in
     if time.time() - last_cast <= 1.5 and state == 2:
         if soul_harvest_vile_plan_combo.ready():

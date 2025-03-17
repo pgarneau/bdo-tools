@@ -17,7 +17,7 @@ def bdo_selected(func):
 def init_spells(spell_instances):
     screenshot = wincap.get_skills()
     for spell in spell_instances:
-        spell.ready(screenshot)
+        spell.ready(screenshot, debug=True)
     
     print("Spells Initiated")
     return True
