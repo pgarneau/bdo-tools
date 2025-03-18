@@ -46,7 +46,6 @@ prime_wotw = NoCooldownSpell(Bind('left', hold_bind), 0.4, get_attack_speed)
 e_buff = Spell(Vision('e_buff'), Bind('shift+e', None), 0.9, 180, get_attack_speed)
 
 # Combos
-cast_ebuff = Combo([e_buff])
 combo_dp_debuff = Combo([prime_natures_tremble, prime_wotw])
 combo_part_1 = Combo([prime_razor_wind, prime_penetrating_wind, flow_bypassing_wind, prime_shotgun, magnus])
 combo_part_2 = Combo([prime_regeneration, prime_tearing_arrow, prime_tearing_arrow_cheat])
@@ -67,8 +66,8 @@ def shai_buff_active():
     return False
 
 def pve(context):
-    if cast_ebuff.ready():
-        cast_ebuff.cast(context)
+    if e_buff.ready():
+        e_buff.cast(context)
     elif combo_dp_debuff.ready():
         combo_dp_debuff.cast(context)
     elif combo_part_1.ready():
