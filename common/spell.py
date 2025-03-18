@@ -142,6 +142,43 @@ class NoCooldownSpell:
     def ready_in(self, seconds):
         return True
 
+class HoldAndSpamSpell(Spell):
+    def __init__(self, vision, bind, spam_bind, duration, cooldown, speed_function=default_speed_function):
+        super().__init__(vision, bind, duration, cooldown, speed_function)
+        self.spam_bind = spam_bind
+    
+    def cast(self, context):
+        counter = 0
+        counter_max = 8
+
+        if context.is_active():
+            print(f"Casting: {self.name}")
+
+            self.bind.press()
+            while(self.ready() and counter < counter_max and context.is_active()):
+                if counter > 0:
+                    self.bind.release(kb_override=self.spam_bind.kb_input, ms_override=self.spam_bind.ms_input)
+                self.bind.press(kb_override=self.spam_bind.kb_input, ms_override=self.spam_bind.ms_input)
+                counter += 1
+                time.sleep(0.08)
+            
+            if counter >= 8:
+                print("Spell cast failed")
+                self.bind.release()
+                return False
+            elif not context.is_active():
+                self.bind.release()
+                if self.ready():
+                    print("Spell cast not completed")
+                    return False
+                else:
+                    self.shared_data.last_cast = time.time()
+                    return True
+            else:
+                self.shared_data.last_cast = time.time()
+                self.bind.hold_and_release(context, self.duration, self.speed_function())
+                return True
+
 class DefenseSpell:
     # constructor
     def __init__(self, vision, bind, duration, speed_function=default_speed_function):

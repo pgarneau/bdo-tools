@@ -43,6 +43,8 @@ class Bind:
     def press(self, kb_override=None, ms_override=None):
         if kb_override is None and ms_override is None:
             keyboard.press(self.kb_input)
+            self.pressed_kb_keys.append(self.kb_input)
+
             ms_input_parts = self.ms_input.split('+')
             for part in ms_input_parts:
                 mouse.press(part)
@@ -63,10 +65,10 @@ class Bind:
     
     def release(self, kb_override=None, ms_override=None):
         if kb_override is None and ms_override is None:
-            for key in self.pressed_kb_keys:
+            for key in list(self.pressed_kb_keys):
                 keyboard.release(key)
                 self.pressed_kb_keys.remove(key)
-            for key in self.pressed_ms_keys:
+            for key in list(self.pressed_ms_keys):
                 mouse.release(key)
                 self.pressed_ms_keys.remove(key)
         else:
