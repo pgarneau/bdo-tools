@@ -73,11 +73,12 @@ claws_vio_combo = Combo([prime_claws_of_darkness, prime_violation])
 imminent_midnight_combo = Combo([prime_imminent_doom, prime_midnight_stinger])
 imminent_hellfire_combo = Combo([prime_imminent_doom, shadow_hellfire])
 imminent_ignition_combo = Combo([prime_imminent_doom, shadow_ignition])
-# prime_black_wave_combo = Combo([prime_black_wave_fake, prime_black_wave])
-# blackwave_eruption_combo = Combo([prime_black_wave_fake, prime_black_wave, ultimate_shadow_eruption])
+blackwave_eruption_combo = Combo([prime_black_wave, ultimate_shadow_eruption])
 eruption_combo = Combo([prime_shadow_eruption, ultimate_shadow_eruption])
 darkness_crow_tbs_abyssal_combo = Combo([prime_darkness_released, prime_crow_flare, prime_turn_back_slash, prime_abyssal_flame])
 crow_tbs_abyssal_combo = Combo([prime_crow_flare, prime_turn_back_slash, prime_abyssal_flame])
+crow_tbs_claw_eruption_combo = Combo([prime_crow_flare, prime_turn_back_slash, prime_claws_of_darkness, prime_shadow_eruption])
+midnight_claw_eruption_combo = Combo([prime_midnight_stinger, prime_claws_of_darkness, prime_shadow_eruption])
 darkness_midnight_combo = Combo([prime_darkness_released, prime_midnight_stinger])
 darkness_ignition_combo = Combo([prime_darkness_released, shadow_ignition])
 darkness_engulfing_combo = Combo([prime_darkness_released, engulfing_shadow])
@@ -103,45 +104,47 @@ def target_dp_debuffed():
     return False
 
 def pve(context):
-    if prime_black_wave.ready():
+    if not target_dp_debuffed() and claws_vio_combo.ready():
+        claws_vio_combo.cast(context)
+    elif not crit_buff_active() and prime_midnight_stinger.ready():
+        prime_midnight_stinger.cast(context)
+    elif imminent_midnight_combo.ready():
+        imminent_midnight_combo.cast(context)
+    elif imminent_hellfire_combo.ready():
+        imminent_hellfire_combo.cast(context)
+    elif imminent_ignition_combo.ready():
+        imminent_ignition_combo.cast(context)
+    elif prime_bloody_calamity_combo.ready():
+        prime_bloody_calamity_combo.cast(context)
+    elif darkness_crow_tbs_abyssal_combo.ready():
+        darkness_crow_tbs_abyssal_combo.cast(context)
+    elif crow_tbs_abyssal_combo.ready():
+        crow_tbs_abyssal_combo.cast(context)
+    elif darkness_midnight_combo.ready():
+        darkness_midnight_combo.cast(context)
+    elif darkness_ignition_combo.ready():
+        darkness_ignition_combo.cast(context)
+    elif darkness_engulfing_combo.ready():
+        darkness_engulfing_combo.cast(context)
+    elif midnight_claw_eruption_combo.ready():
+        midnight_claw_eruption_combo.cast(context)
+    elif crow_tbs_claw_eruption_combo.ready():
+        crow_tbs_claw_eruption_combo.cast(context)
+    elif blackwave_eruption_combo.ready():
+        blackwave_eruption_combo.cast(context)
+    elif claws_vio_combo.ready():
+        claws_vio_combo.cast(context)
+    elif prime_black_wave.ready():
         prime_black_wave.cast(context)
-    # if not target_dp_debuffed() and claws_vio_combo.ready():
-    #     claws_vio_combo.cast(context)
-    # elif not crit_buff_active() and prime_midnight_stinger.ready():
-    #     prime_midnight_stinger.cast(context)
-    # elif imminent_midnight_combo.ready():
-    #     imminent_midnight_combo.cast(context)
-    # elif imminent_hellfire_combo.ready():
-    #     imminent_hellfire_combo.cast(context)
-    # elif imminent_ignition_combo.ready():
-    #     imminent_ignition_combo.cast(context)
-    # elif prime_bloody_calamity_combo.ready():
-    #     prime_bloody_calamity_combo.cast(context)
-    # elif darkness_crow_tbs_abyssal_combo.ready():
-    #     darkness_crow_tbs_abyssal_combo.cast(context)
-    # elif crow_tbs_abyssal_combo.ready():
-    #     crow_tbs_abyssal_combo.cast(context)
-    # elif darkness_midnight_combo.ready():
-    #     darkness_midnight_combo.cast(context)
-    # elif darkness_ignition_combo.ready():
-    #     darkness_ignition_combo.cast(context)
-    # elif darkness_engulfing_combo.ready():
-    #     darkness_engulfing_combo.cast(context)
-    # elif blackwave_eruption_combo.ready():
-    #     blackwave_eruption_combo.cast(context)
-    # elif claws_vio_combo.ready():
-    #     claws_vio_combo.cast(context)
-    # elif prime_black_wave_combo.ready():
-    #     prime_black_wave_combo.cast(context)
-    # elif shadow_hellfire_hotbar.ready():
-    #     shadow_hellfire_hotbar.cast(context)
-    # elif shadow_ignition.ready():
-    #     shadow_ignition.cast(context)
-    # elif eruption_combo.ready():
-    #     eruption_combo.cast(context)
-    # elif prime_shadow_eruption.ready():
-    #     prime_shadow_eruption.cast(context)
-    # elif dark_tendrils.ready():
-    #     dark_tendrils.cast(context)
-    # elif engulfing_shadow.ready():
-    #     engulfing_shadow.cast(context)
+    elif shadow_hellfire_hotbar.ready():
+        shadow_hellfire_hotbar.cast(context)
+    elif shadow_ignition.ready():
+        shadow_ignition.cast(context)
+    elif eruption_combo.ready():
+        eruption_combo.cast(context)
+    elif prime_shadow_eruption.ready():
+        prime_shadow_eruption.cast(context)
+    elif dark_tendrils.ready():
+        dark_tendrils.cast(context)
+    elif engulfing_shadow.ready():
+        engulfing_shadow.cast(context)
