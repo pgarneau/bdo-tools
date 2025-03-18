@@ -42,13 +42,15 @@ class Bind:
     
     def press(self, kb_override=None, ms_override=None):
         if kb_override is None and ms_override is None:
-            keyboard.press(self.kb_input)
-            self.pressed_kb_keys.append(self.kb_input)
+            if self.kb_input is not None:
+                keyboard.press(self.kb_input)
+                self.pressed_kb_keys.append(self.kb_input)
 
-            ms_input_parts = self.ms_input.split('+')
-            for part in ms_input_parts:
-                mouse.press(part)
-                self.pressed_ms_keys.append(part)
+            if self.ms_input is not None:
+                ms_input_parts = self.ms_input.split('+')
+                for part in ms_input_parts:
+                    mouse.press(part)
+                    self.pressed_ms_keys.append(part)
         
         else:
             if kb_override is not None:
