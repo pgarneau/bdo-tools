@@ -51,6 +51,8 @@ class Bind:
                 for part in ms_input_parts:
                     mouse.press(part)
                     self.pressed_ms_keys.append(part)
+                    if len(ms_input_parts) > 1:
+                        time.sleep(0.02)
         
         else:
             if kb_override is not None:
@@ -61,6 +63,8 @@ class Bind:
                 for part in ms_override_parts:
                     mouse.press(part)
                     self.pressed_ms_keys.append(part)
+                    if len(ms_override_parts) > 1:
+                        time.sleep(0.02)
     
     def hold_and_release(self, context, hold_time, modifier):
         self.hold_handler(self, context, hold_time, modifier)
@@ -78,8 +82,10 @@ class Bind:
                 keyboard.release(kb_override)
                 self.pressed_kb_keys.remove(kb_override)
             if ms_override is not None:
-                mouse.release(ms_override)
-                self.pressed_ms_keys.remove(ms_override)
+                ms_input_parts = ms_override.split('+')
+                for part in ms_input_parts:
+                    mouse.release(part)
+                    self.pressed_ms_keys.remove(part)
 
     @staticmethod
     def parse(keys):
