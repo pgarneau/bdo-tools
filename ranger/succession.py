@@ -39,10 +39,10 @@ prime_natures_tremble = Spell(Vision('prime_natures_tremble'), Bind('w', 'c'), 0
 prime_penetrating_wind = Spell(Vision('prime_penetrating_wind'), Bind('shift', 'right'), 0.09, 7, get_attack_speed)
 prime_razor_wind = Spell(Vision('prime_razor_wind'), Bind('e', 'left', hold_bind), 2.3, 8, get_attack_speed)
 prime_tearing_arrow = Spell(Vision('prime_tearing_arrow'), Bind('s', 'e'), 0.1, 7, get_attack_speed)
-prime_tearing_arrow_cheat = NoCooldownSpell(Bind('left', hold_bind), 1.35, 7, get_attack_speed)
+prime_tearing_arrow_cheat = NoCooldownSpell('prime_tearing_arrow', Bind('left', hold_bind), 1.35, 7, get_attack_speed)
 prime_ultimate_blasting_gust = Spell(Vision('prime_ultimate_blasting_gust'), Bind('lmb', None), 1.9, 8, get_attack_speed)
 prime_shotgun = Spell(Vision('prime_shotgun'), Bind('space', None), 0.3, 3, get_attack_speed)
-prime_wotw = NoCooldownSpell(Bind('left', hold_bind), 0.4, get_attack_speed)
+prime_wotw = NoCooldownSpell('prime_wotw', Bind('left', hold_bind), 0.4, get_attack_speed)
 e_buff = Spell(Vision('e_buff'), Bind('shift+e', None), 0.9, 180, get_attack_speed)
 
 # Combos
