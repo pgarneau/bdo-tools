@@ -32,7 +32,7 @@ def hold_bind_release_early(bind, context, hold_time, modifier):
     bind.release()
 
 class Bind:
-    def __init__(self, kb, mouse, hold_handler=hold_bind_release_early, hotbar=False):
+    def __init__(self, kb, mouse, hold_handler=default_hold_and_release_handler, hotbar=False):
         self.kb_input = kb
         self.ms_input = mouse
         self.hold_handler = hold_handler
@@ -46,23 +46,25 @@ class Bind:
             if self.ms_input == 'left+right':
                 mouse.press('left')
                 mouse.press('right')
+            # Sorc bullshit
+            elif self.ms_input == 'right+left':
+                mouse.press('right')
+                time.sleep(0.02)
+                mouse.press('left')
             else:
                 mouse.press(self.ms_input)
     
     def hold_and_release(self, context, hold_time, modifier):
-        if self.hotbar:
-            self.release()
-            return
-
         self.hold_handler(self, context, hold_time, modifier)
     
     def release(self):
         if self.kb_input is not None:    
             keyboard.release(self.kb_input)
         if self.ms_input is not None:
-            if self.ms_input == 'left+right':
-                mouse.release('left')
-                mouse.release('right')
+            if self.ms_input == 'left+right' or self.ms_input == 'right+left':
+                ms_input_parts = self.ms_input.split('+')
+                for part in ms_input_parts:
+                    mouse.release(part)
             else:
                 mouse.release(self.ms_input)
 

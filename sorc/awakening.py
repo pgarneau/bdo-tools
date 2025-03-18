@@ -1,4 +1,3 @@
-
 import os
 import time
 from common.windowcapture import wincap
@@ -56,32 +55,16 @@ link_spells(turn_back_slash, turn_back_slash_cancel)
 link_spells(vile_plan, vile_plan_cancel)
 
 # Pre-awak
-dark_tendrils = Spell(Vision('dark_tendrils'), Bind('2', None, hotbar=True), 1.4, 11, get_attack_speed)
+dark_tendrils_hotbar = Spell(Vision('dark_tendrils'), Bind('2', None, hotbar=True), 1.4, 11, get_attack_speed)
 midnight_stinger = Spell(Vision('midnight_stinger'), Bind('shift', 'left'), 0.4, 2, get_attack_speed)
 engulfing_shadow = Spell(Vision('engulfing_shadow'), Bind('shift+z', None), 0.65, 7, get_attack_speed)
 shadow_ignition = Spell(Vision('shadow_ignition'), Bind('shift+x', None), 0.5, 10, get_attack_speed)
-shadow_hellfire = Spell(Vision('shadow_hellfire'), Bind('1', None, hotbar=True), 0.6, 4, get_attack_speed)
+shadow_hellfire_hotbar = Spell(Vision('shadow_hellfire'), Bind('1', None, hotbar=True), 0.6, 4, get_attack_speed)
 wings_of_the_crow = Spell(Vision('wings_of_the_crow'), Bind('w', 'right'), 0.45, 4, get_attack_speed)
 imminent_doom = Spell(Vision('imminent_doom'), Bind('shift+e', 'right'), 0.3, 18, get_attack_speed)
 bloody_calamity = Spell(Vision('bloody_calamity'), Bind('space', None), 0.15, 20, get_attack_speed)
-
-# Succession
-prime_claws_of_darkness = Spell(Vision('prime_claws_of_darkness'), Bind('w', 'left'), 0.3, 5, get_attack_speed)
-prime_abyssal_flame = Spell(Vision('prime_abyssal_flame'), Bind(None, 'left+right'), 0.4, 7, get_attack_speed)
-prime_black_wave_cheat = NoCooldownSpell('prime_black_wave', Bind('s', 'right'), 0.05, get_attack_speed)
-prime_black_wave = Spell(Vision('prime_black_wave'), Bind('s', 'left+right', hold_bind_release_early), 1.7, 8, get_attack_speed)
-prime_bloody_calamity = Spell(Vision('prime_bloody_calamity'), Bind('space', None, hold_bind), 0.3, 16, get_attack_speed)
-prime_bloody_calamity_cheat = NoCooldownSpell('prime_bloody_calamity', Bind('space', 'left', hold_bind_release_early), 0.35, get_attack_speed)
-prime_crow_flare = Spell(Vision('prime_crow_flare'), Bind('e', None), 0.45, 2, get_attack_speed)
-prime_dark_flame = Spell(Vision('prime_dark_flame'), Bind('s', 'left'), 0.55, 6, get_attack_speed)
-prime_darkness_released = Spell(Vision('prime_darkness_released'), Bind('w+f', None), 0.35, 6, get_attack_speed)
-prime_midnight_stinger = Spell(Vision('prime_midnight_stinger'), Bind('shift', 'left'), 0.25, 2, get_attack_speed)
-prime_shadow_eruption = Spell(Vision('prime_shadow_eruption'), Bind('shift+f', None), 0.45, 7, get_attack_speed)
-prime_turn_back_slash = Spell(Vision('prime_turn_back_slash'), Bind('s+c', None), 0.25, 5, get_attack_speed)
-ultimate_dark_flame = Spell(Vision('ultimate_dark_flame'), Bind('s', 'left'), 1, 9, get_attack_speed)
-ultimate_shadow_eruption = Spell(Vision('ultimate_shadow_eruption'), Bind(None, 'left'), 0.42, 9, get_attack_speed)
-prime_imminent_doom = Spell(Vision('imminent_doom'), Bind('shift+e', 'right'), 0.2, 14, get_attack_speed)
-prime_violation = Spell(Vision('prime_violation'), Bind('w+c', None), 0.7, 6, get_attack_speed)
+shadow_hellfire = Spell(Vision('shadow_hellfire'), Bind(None, 'right', hold_bind_release_early), 0.6, 4, get_attack_speed)
+dark_tendrils = Spell(Vision('dark_tendrils'), Bind('s+e', None), 1.4, 11, get_attack_speed)
 
 iframe_right = Iframe(Bind('shift+d', None), 0.6, get_attack_speed)
 iframe_left = Iframe(Bind('shift+a', None), 0.6, get_attack_speed)
@@ -97,20 +80,10 @@ grim_reaper = Combo([grim_reaper_judgement_cheat1, grim_reaper_judgement_cheat2]
 soul_harvest_vile_plan_combo = Combo([soul_harvest, vile_plan_cancel])
 
 ignition_hellfire_combo = Combo([shadow_ignition, shadow_hellfire])
-hellfire_tendrils_combo = Combo([shadow_hellfire, dark_tendrils])
-hellfire_engulfing_combo = Combo([shadow_hellfire, engulfing_shadow])
+hellfire_tendrils_combo = Combo([shadow_hellfire_hotbar, dark_tendrils])
+hellfire_engulfing_combo = Combo([shadow_hellfire_hotbar, engulfing_shadow])
 calamity_combo1 = Combo([bloody_calamity, shadow_ignition])
 calamity_combo2 = Combo([bloody_calamity, engulfing_shadow])
-
-# Suc Combos
-prime_black_wave_combo = Combo([prime_black_wave_cheat, prime_black_wave])
-prime_bloody_calamity_combo = Combo([prime_midnight_stinger, prime_bloody_calamity, prime_bloody_calamity_cheat])
-claws_vio_combo = Combo([prime_claws_of_darkness, prime_violation])
-imminent_midnight_combo = Combo([prime_imminent_doom, prime_midnight_stinger])
-imminent_hellfire_combo = Combo([prime_imminent_doom, shadow_hellfire])
-imminent_ignition_combo = Combo([prime_imminent_doom, shadow_ignition])
-
-crow_tbs_abyssal_combo = Combo([prime_crow_flare, prime_turn_back_slash, prime_abyssal_flame])
 
 def crit_buff_active():
     buffs = wincap.get_buffs()
@@ -140,3 +113,108 @@ def target_dp_debuffed():
     if x:
         return True
     return False
+
+def calamity(context, direction, state):
+    if direction == 'left':
+        iframe_left.cast(context)
+    elif direction == 'right':
+        iframe_right.cast(context)
+    
+    if calamity_combo1.ready():
+        if calamity_combo1.cast(context):
+            return 1, time.time()
+    elif calamity_combo2.ready():
+        if calamity_combo2.cast(context):
+            return 1, time.time()
+    
+    return state, time.time()
+
+# State 0 = Awakening
+# State 1 = Pre-Awak
+# State 2 = Unsure
+def pve(context, last_cast, state):
+    # Unsure what state we are in
+    if time.time() - last_cast <= 1.5 and state == 2:
+        if soul_harvest_vile_plan_combo.ready():
+            if soul_harvest_vile_plan_combo.cast(context):
+                return 0
+            return 2
+        elif soul_harvest.ready():
+            if soul_harvest.cast(context):
+                return 0
+            return 2
+        elif shadow_ignition.ready():
+            if shadow_ignition.cast(context):
+                return 1
+            return 2
+        elif shadow_hellfire_hotbar.ready():
+            if shadow_hellfire_hotbar.cast(context):
+                return 1
+            return 2
+    elif state == 1:
+        if soul_harvest_vile_plan_combo.ready():
+            if soul_harvest_vile_plan_combo.cast(context):
+                return 0
+            return 2
+        elif soul_harvest.ready():
+            if soul_harvest.cast(context):
+                return 0
+            return 2
+        elif shadow_ignition.ready():
+            shadow_ignition.cast(context)
+            return 1
+        elif shadow_hellfire.ready():
+            shadow_hellfire.cast(context)
+            return 1
+        elif soul_reaper.ready():
+            if soul_reaper.cast(context):
+                return 0
+            return 2
+        elif dark_tendrils.ready():
+            dark_tendrils.cast(context)
+            return 1
+        elif engulfing_shadow.ready():
+            engulfing_shadow.cast(context)
+            return 1
+        elif wings_of_the_crow.ready():
+            if wings_of_the_crow.cast(context):
+                return 0
+            return 2
+    elif tbs_blade_soul_vile.ready():
+        tbs_blade_soul_vile.cast(context)
+    elif tbs_blade_soul.ready():
+        tbs_blade_soul.cast(context)
+    elif tbs_blade.ready():
+        tbs_blade.cast(context)
+    elif violation_combo.ready():
+        violation_combo.cast(context)
+    elif not crit_buff_active() and midnight_stinger.ready():
+        if midnight_stinger.cast(context):
+            return 1
+        return 2
+    elif swirling_darkness.ready():
+        swirling_darkness.cast(context)
+    elif grim_reaper_combo.ready():
+        grim_reaper_combo.cast(context)
+    elif grim_reaper.ready():
+        grim_reaper.cast(context)
+    elif soul_harvest_vile_plan_combo.ready():
+        soul_harvest_vile_plan_combo.cast(context)
+    elif soul_harvest.ready():
+        soul_harvest.cast(context)
+    elif ignition_hellfire_combo.ready():
+        if ignition_hellfire_combo.cast(context):
+            return 1
+        return 2
+    elif hellfire_tendrils_combo.ready():
+        if hellfire_tendrils_combo.cast(context):
+            return 1
+        return 2
+    elif hellfire_engulfing_combo.ready():
+        if hellfire_engulfing_combo.cast(context):
+            return 1
+        return 2
+    elif soul_reaper.ready():
+        soul_reaper.cast(context)
+    
+    return state
