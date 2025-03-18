@@ -41,38 +41,41 @@ class Bind:
         self.pressed_ms_keys = []
     
     def press(self, kb_override=None, ms_override=None):
-        if kb_override is not None:
-            keyboard.press(kb_override)
-            self.pressed_kb_keys.append(kb_override)
-        elif self.kb_input is not None:
+        if kb_override is None and ms_override is None:
             keyboard.press(self.kb_input)
-            self.pressed_kb_keys.append(self.kb_input)
-        
-        if ms_override is not None:
-            ms_override.press(ms_override)
-            self.pressed_ms_keys.append(ms_override)
-        elif self.ms_input is not None:
             ms_input_parts = self.ms_input.split('+')
             for part in ms_input_parts:
                 mouse.press(part)
                 self.pressed_ms_keys.append(part)
+        
+        else:
+            if kb_override is not None:
+                keyboard.press(kb_override)
+                self.pressed_kb_keys.append(kb_override)
+            if ms_override is not None:
+                ms_override_parts = ms_override.split('+')
+                for part in ms_override_parts:
+                    mouse.press(part)
+                    self.pressed_ms_keys.append(part)
     
     def hold_and_release(self, context, hold_time, modifier):
         self.hold_handler(self, context, hold_time, modifier)
     
     def release(self, kb_override=None, ms_override=None):
-        if kb_override is not None:
-            keyboard.release(kb_override)
-            self.pressed_kb_keys.remove(kb_override)
-        else:
+        if kb_override is None and ms_override is None:
             for key in self.pressed_kb_keys:
                 keyboard.release(key)
-        if ms_override is not None:
-            ms_override.release(ms_override)
-            self.pressed_ms_keys.remove(ms_override)
-        else:
+                self.pressed_kb_keys.remove(key)
             for key in self.pressed_ms_keys:
                 mouse.release(key)
+                self.pressed_ms_keys.remove(key)
+        else:
+            if kb_override is not None:
+                keyboard.release(kb_override)
+                self.pressed_kb_keys.remove(kb_override)
+            if ms_override is not None:
+                mouse.release(ms_override)
+                self.pressed_ms_keys.remove(ms_override)
 
     @staticmethod
     def parse(keys):
