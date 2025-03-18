@@ -107,6 +107,25 @@ def pve(context, last_cast, state):
     
     return state
 
+def suc_pve(context):
+    if not target_dp_debuffed() and claws_vio_combo.ready():
+        claws_vio_combo.cast(context)
+    elif not crit_buff_active() and prime_midnight_stinger.ready():
+        prime_midnight_stinger.cast(context)
+    elif imminent_midnight_combo.ready():
+        imminent_midnight_combo.cast(context)
+    elif imminent_hellfire_combo.ready():
+        imminent_hellfire_combo.cast(context)
+    elif imminent_ignition_combo.ready():
+        imminent_ignition_combo.cast(context)
+    elif prime_bloody_calamity_combo.ready():
+        prime_bloody_calamity_combo.cast(context)
+    elif prime_darkness_released.ready():
+        prime_darkness_released.cast(context)
+    elif crow_tbs_abyssal_combo.ready():
+        crow_tbs_abyssal_combo.cast(context)
+    # elif prime_black_wave_combo.ready():
+    #     prime_black_wave_combo.cast(context)
 # def grim():
 #     if grim_reaper_judgement.ready():
 #         grim_reaper_judgement.cast()

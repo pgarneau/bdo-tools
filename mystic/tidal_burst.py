@@ -1,11 +1,5 @@
 import time
-import keyboard
-from vision import Vision
-import settings
-from windowcapture import WindowCapture
-from spell import Spell
-
-wincap = WindowCapture()
+from common.spell import Spell
 
 class TidalBurst(Spell):
     # constructor
@@ -13,27 +7,29 @@ class TidalBurst(Spell):
     #     super().__init__(name, bind, speed_function, threshold)
     #     self.mov_speed_vision = Vision(f"./spells/movement_speed_5.png")
     
-    def cast(self):
+    def cast(self, context):
         counter = 0
-        if settings.keybind_active():
+        counter_max = 8
+
+        if context.is_active():
             print(f"Casting: {self.name}")
             self.bind.press()
-            while(self.ready() and counter < 8 and settings.keybind_active()):
+            while(self.ready() and counter < counter_max and context.is_active()):
                 counter += 1
                 time.sleep(0.08)
         
-            if counter >= 8 and counter != 0:
+            if counter >= counter_max and counter != 0:
                 print("Spell cast failed")
                 self.bind.release()
                 return False
             elif counter == 0:
                 self.last_cast = time.time()
                 time.sleep(0.3)
-                self.bind.hold_and_release(self.speed_function())
+                self.bind.hold_and_release(context, self.duration, self.speed_function())
                 return True
             else:
                 self.last_cast = time.time()
-                self.bind.hold_and_release(self.speed_function())
+                self.bind.hold_and_release(context, self.duration, self.speed_function())
                 return True
     
     # def mov_speed_buff_active(self, debug=None):

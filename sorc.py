@@ -3,7 +3,7 @@ import time
 
 import keyboard._winkeyboard
 from common.windowcapture import wincap
-from sorc.pve import pve, calamity
+from sorc.pve import pve, calamity, suc_pve
 from sorc.spells import iframe_right
 import common.utils as utils
 from pynput import keyboard as kb
@@ -19,7 +19,8 @@ var.last_cast = 0
 
 
 def main(context):
-    var.state = pve(context, var.last_cast, var.state)
+    # var.state = pve(context, var.last_cast, var.state)
+    suc_pve(context)
 
 def reposition_right(context):
     var.state, var.last_cast = calamity(context, 'right', var.state)
@@ -29,8 +30,9 @@ def reposition_left(context):
 
 listener = Listener(debug=False)
 listener.register_keybind('f24', main)
-listener.register_keybind('shift+d', reposition_right, override=True)
-listener.register_keybind('shift+a', reposition_left, override=True)
+# listener.register_keybind('f10', main)
+# listener.register_keybind('shift+d', reposition_right, override=True)
+# listener.register_keybind('shift+a', reposition_left, override=True)
 listener.start()
 
 try:

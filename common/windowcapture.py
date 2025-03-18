@@ -41,26 +41,25 @@ class WindowCapture:
             if not self.hwnd:
                 raise Exception('Window not found: {}'.format(window_name))
     
-    def get_screenshot(self, x, y, w, h):
+    def get_screenshot(self, x, y, w, h, scale=False):
         # Scale coordinates based on current screen resolution
-        scaled_x = int(x * (self.screen_width / self.BASE_WIDTH))
-        scaled_y = int(y * (self.screen_height / self.BASE_HEIGHT))
-        scaled_w = w
-        scaled_h = h
+        if scale:
+            x = int(x * (self.screen_width / self.BASE_WIDTH))
+            y = int(y * (self.screen_height / self.BASE_HEIGHT))
         
         # get the window image data
         wDC = win32gui.GetWindowDC(self.hwnd)
         dcObj = win32ui.CreateDCFromHandle(wDC)
         cDC = dcObj.CreateCompatibleDC()
         dataBitMap = win32ui.CreateBitmap()
-        dataBitMap.CreateCompatibleBitmap(dcObj, scaled_w, scaled_h)
+        dataBitMap.CreateCompatibleBitmap(dcObj, w, h)
         cDC.SelectObject(dataBitMap)
-        cDC.BitBlt((0, 0), (scaled_w, scaled_h), dcObj, (scaled_x, scaled_y), win32con.SRCCOPY)
+        cDC.BitBlt((0, 0), (w, h), dcObj, (x, y), win32con.SRCCOPY)
 
         # convert the raw data into a format opencv can read
         signedIntsArray = dataBitMap.GetBitmapBits(True)
         img = np.fromstring(signedIntsArray, dtype='uint8')
-        img.shape = (scaled_h, scaled_w, 4)
+        img.shape = (h, w, 4)
 
         # free resources
         dcObj.DeleteDC()
@@ -152,7 +151,7 @@ class WindowCapture:
         w = 900
         h = 900
 
-        img = self.get_screenshot(x, y, w, h)
+        img = self.get_screenshot(x, y, w, h, scale=True)
 
         hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
         lower_yellow = np.array([22, 100, 100])
@@ -170,7 +169,7 @@ class WindowCapture:
         w = 400
         h = 50
 
-        return self.get_screenshot(x, y, w, h)
+        return self.get_screenshot(x, y, w, h, scale=True)
     
     def get_defense_icon(self):
         x = 1343
@@ -178,7 +177,7 @@ class WindowCapture:
         w = 74
         h = 200
 
-        return self.get_screenshot(x, y, w, h)
+        return self.get_screenshot(x, y, w, h, scale=True)
     
     def get_hunting_crosshair(self):
         x = 1215
@@ -186,7 +185,7 @@ class WindowCapture:
         w = 140
         h = 140
 
-        return self.get_screenshot(x, y, w, h)
+        return self.get_screenshot(x, y, w, h, scale=True)
 
     def get_reloader(self):
         x = 1200
@@ -194,7 +193,7 @@ class WindowCapture:
         w = 180
         h = 200
 
-        return self.get_screenshot(x, y, w, h)
+        return self.get_screenshot(x, y, w, h, scale=True)
 
 
 

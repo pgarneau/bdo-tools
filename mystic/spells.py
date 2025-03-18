@@ -1,31 +1,27 @@
 import os
 import time
-from windowcapture import WindowCapture
-from spell import Spell, NoCooldownSpell
-from combo import Combo
-from bind import Bind, hold_bind, hold_bind_release_early
+from common.windowcapture import wincap
+from common.spell import Spell, NoCooldownSpell
+from common.combo import Combo
+from common.bind import Bind, hold_bind, hold_bind_release_early
+from common.vision import Vision
 from .shards import Shards
 from .tidal_burst import TidalBurst
 
 # Change the working directory to the folder this script is in.
-# Doing this because I'll be putting the files from each video in their 
-# own folder on GitHub
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-# initialize the WindowCapture class
-wincap = WindowCapture()
+# buffs
+crit_rate_buff = Spell(Vision('crit', 0.98), None)
+attack_speed_buff = Spell(Vision('attack_speed', 0.98), None)
+attack_cast_speed_buff = Spell(Vision('attack_cast_speed', 0.98), None)
+dragonize_buff = Spell(Vision('dragonize_buff', 0.98), None)
+ap_buff = Spell(Vision('ap', 0.98), None)
 
-#buffs
-crit_rate_buff = Spell('crit', None, threshold=0.98)
-attack_speed_buff = Spell('attack_speed', None, threshold=0.98)
-attack_cast_speed_buff = Spell('attack_cast_speed', None, threshold=0.98)
-dragonize_buff = Spell('dragonize_buff', None, threshold=0.98)
-ap_buff = Spell('ap', None, threshold=0.98)
+shard_count = Shards(Vision('no_shards', 0.9), None)
 
-shard_count = Shards('no_shards', None, threshold=0.9)
-
-#Debuffs
-dp_debuff = Spell('dp_debuff', None, threshold=0.98)
+# Debuffs
+dp_debuff = Spell(Vision('dp_debuff', 0.98), None)
 
 def get_attack_speed():
     speed = 1
@@ -59,42 +55,38 @@ def get_attack_speed():
 #earthsplitter -> crouching 0.62, 0.55
 #wave_orb -> earthsplitter 0.36, 0.32
 #wave_orb -> crouching 0.43, 0.4
-rapid_stream = Spell('rapid_stream', Bind('shift', 'left', 0.6), 5, get_attack_speed)
-# tidal_burst_quick = Spell('tidal_burst', Bind('shift', 'right', 1.1, hold_bind_release_early), get_attack_speed)
-# tidal_burst = Spell('tidal_burst', Bind('shift', 'right', 1.5, hold_bind_release_early), get_attack_speed)
-tidal_burst_quick = TidalBurst('tidal_burst', Bind('shift', 'right', 1.1, hold_bind_release_early), 3, get_attack_speed)
-tidal_burst = TidalBurst('tidal_burst', Bind('shift', 'right', 1.5, hold_bind_release_early), 3, get_attack_speed)
+rapid_stream = Spell(Vision('rapid_stream'), Bind('shift', 'left'), 0.6, 5, get_attack_speed)
+tidal_burst_quick = TidalBurst(Vision('tidal_burst'), Bind('shift', 'right', hold_bind_release_early), 1.1, 3, get_attack_speed)
+tidal_burst = TidalBurst(Vision('tidal_burst'), Bind('shift', 'right', hold_bind_release_early), 1.5, 3, get_attack_speed)
 
-dragon_strike = Spell('dragon_strike', Bind(None, 'right', 1, hold_bind), 6, get_attack_speed)
-short_dragon_strike = Spell('dragon_strike', Bind(None, 'right', 0.5), 6, get_attack_speed)
-earthsplitter = Spell('earthsplitter', Bind('s', 'right', 0.7), 6, get_attack_speed)
-gushing_waters = Spell('gushing_waters', Bind(None, 'left', 0.55), 7, get_attack_speed)
-gushing_waters_hotkey = Spell('gushing_waters', Bind('3', None, 0.55, hotbar=True), 7, get_attack_speed)
-rising_dragon = Spell('rising_dragon', Bind('shift+q', None, 0.7), 8, get_attack_speed)
-sea_burial = Spell('sea_burial', Bind('w', 'right', 1.15), 7, get_attack_speed)
-wave_orb = Spell('wave_orb', Bind(None, 'left+right', 0.5), 11, get_attack_speed)
-dragonize = Spell('dragonize', Bind('shift+e', None, 1.5), 180, get_attack_speed)
-hurricane_sweep = Spell('hurricane_sweep', Bind('f', None, 1.65, hold_bind), 6, get_attack_speed)
-hurricane_sweep_kick = Spell('hurricane_sweep', Bind('s+f', None, 0.5, hold_bind_release_early), 6, get_attack_speed)
-
+dragon_strike = Spell(Vision('dragon_strike'), Bind(None, 'right', hold_bind), 1.0, 6, get_attack_speed)
+short_dragon_strike = Spell(Vision('dragon_strike'), Bind(None, 'right'), 0.5, 6, get_attack_speed)
+earthsplitter = Spell(Vision('earthsplitter'), Bind('s', 'right'), 0.7, 6, get_attack_speed)
+gushing_waters = Spell(Vision('gushing_waters'), Bind(None, 'left'), 0.55, 7, get_attack_speed)
+gushing_waters_hotkey = Spell(Vision('gushing_waters'), Bind('3', None, hotbar=True), 0.55, 7, get_attack_speed)
+rising_dragon = Spell(Vision('rising_dragon'), Bind('shift+q', None), 0.7, 8, get_attack_speed)
+sea_burial = Spell(Vision('sea_burial'), Bind('w', 'right'), 1.15, 7, get_attack_speed)
+wave_orb = Spell(Vision('wave_orb'), Bind(None, 'left+right', hold_bind_release_early), 0.5, 11, get_attack_speed)
+dragonize = Spell(Vision('dragonize'), Bind('shift+e', None), 1.5, 180, get_attack_speed)
+hurricane_sweep = Spell(Vision('hurricane_sweep'), Bind('f', None, hold_bind), 1.65, 6, get_attack_speed)
+hurricane_sweep_kick = Spell(Vision('hurricane_sweep'), Bind('s+f', None, hold_bind_release_early), 0.5, 6, get_attack_speed)
 
 # PreAwak
-c_swap = NoCooldownSpell('c_swap', Bind('w+c', None, 0.6, hold_bind), get_attack_speed)
-crouching_wolf = Spell('crouching_wolf', Bind('space', None, 0.3), 5, get_attack_speed)
-crouching_wolf_hotkey = Spell('crouching_wolf', Bind('3', None, 0.55, hotbar=True), 5)
-silent_step = Spell('silent_step', Bind('shift+a', None, 0.75), 4)
-scissor_kick = Spell('scissor_kick', Bind('2', None, 0.7, hotbar=True), 6)
-rage_hammer = Spell('rage_hammer', Bind('shift+q', None, 1.5), 8)
-mass_destruction = Spell('mass_destruction', Bind('a', 'right', 1.2, hold_bind), 5)
-twisted_collision_sa = Spell('twisted_collision', Bind('q', 'left', 1, hold_bind), 5)
-twisted_collision = Spell('twisted_collision', Bind('q', None, 0.2), 5, get_attack_speed)
-sky_rammer = Spell('sky_rammer', Bind('f', None, 0.7), 12)
-elbow_edge = Spell('elbow_edge', Bind('shift', 'left', 0.7, hold_bind), 5)
-hurricane_kick = Spell('hurricane_kick', Bind('2', None, 0.95, hotbar=True), 9, get_attack_speed)
-hurricane_kick_rmb = Spell('hurricane_kick', Bind(None, 'right', 1.3, hold_bind_release_early), 9, get_attack_speed)
-recoil_slam = Spell('recoil_slam', Bind('w+c', None, 0.4), 3, get_attack_speed)
-unbridled_wrath = Spell('unbridled_wrath', Bind('shift+x', None, 1), 10, get_attack_speed)
-
+c_swap = NoCooldownSpell('c_swap', Bind('w+c', None, hold_bind), 0.6, get_attack_speed)
+crouching_wolf = Spell(Vision('crouching_wolf'), Bind('space', None), 0.3, 5, get_attack_speed)
+crouching_wolf_hotkey = Spell(Vision('crouching_wolf'), Bind('3', None, hotbar=True), 0.55, 5)
+silent_step = Spell(Vision('silent_step'), Bind('shift+a', None), 0.75, 4)
+scissor_kick = Spell(Vision('scissor_kick'), Bind('2', None, hotbar=True), 0.7, 6)
+rage_hammer = Spell(Vision('rage_hammer'), Bind('shift+q', None), 1.5, 8)
+mass_destruction = Spell(Vision('mass_destruction'), Bind('a', 'right', hold_bind), 1.2, 5)
+twisted_collision_sa = Spell(Vision('twisted_collision'), Bind('q', 'left', hold_bind), 1.0, 5)
+twisted_collision = Spell(Vision('twisted_collision'), Bind('q', None), 0.2, 5, get_attack_speed)
+sky_rammer = Spell(Vision('sky_rammer'), Bind('f', None), 0.7, 12)
+elbow_edge = Spell(Vision('elbow_edge'), Bind('shift', 'left', hold_bind), 0.7, 5)
+hurricane_kick = Spell(Vision('hurricane_kick'), Bind('2', None, hotbar=True), 0.95, 9, get_attack_speed)
+hurricane_kick_rmb = Spell(Vision('hurricane_kick'), Bind(None, 'right', hold_bind_release_early), 1.3, 9, get_attack_speed)
+recoil_slam = Spell(Vision('recoil_slam'), Bind('w+c', None), 0.4, 3, get_attack_speed)
+unbridled_wrath = Spell(Vision('unbridled_wrath'), Bind('shift+x', None), 1.0, 10, get_attack_speed)
 
 # Combos
 tidal_combo = Combo([rapid_stream, tidal_burst_quick])
@@ -116,7 +108,6 @@ no_rising_opener = Combo([short_dragon_strike, wave_orb, hurricane_sweep])
 downsmash_finisher = Combo([twisted_collision, sea_burial, gushing_waters, earthsplitter, recoil_slam])
 
 twisted_sa = Combo([twisted_collision_sa, sky_rammer])
-
 
 def crit_rate_active():
     buffs = wincap.get_buffs()

@@ -113,8 +113,8 @@ class Spell:
 
 class NoCooldownSpell:
     # constructor
-    def __init__(self, vision, bind, duration, speed_function=default_speed_function):
-        self.name = vision.name
+    def __init__(self, name, bind, duration, speed_function=default_speed_function):
+        self.name = name
         self.bind = bind
         self.duration = duration
         self.speed_function = speed_function
