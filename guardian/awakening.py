@@ -16,8 +16,8 @@ shai_buff = Spell(Vision('shai_speed', 0.98), None)
 def get_attack_speed():
     speed = 1
     buffs = wincap.get_buffs()
-    if ap_buff.ready(buffs):
-        speed = speed + 0.05
+    #if ap_buff.ready(buffs): guardian has an ap prebuff showing this icon so this doesnt work
+    #    speed = speed + 0.05
     # elif cast_speed_buff.ready(buffs):
     #     speed = speed + 0.1
     if shai_buff.ready(buffs):
@@ -41,7 +41,7 @@ searing_fang = Spell(Vision('searing_fang'), Bind('shift', 'right', hold_bind), 
 scornful_slash = Spell(Vision('scornful_slash'), Bind('s', 'right', hold_bind), 0.75, 5, get_attack_speed)
 scornful_slash_cheat = NoCooldownSpell('scornful_slash', Bind('s', 'right', hold_bind), 1.35, get_attack_speed)
 god_incinerator = Spell(Vision('god_incinerator'), Bind('shift+q', None), 1.8, 8, get_attack_speed)
-fireborne_rupture = Spell(Vision('fireborne_rupture'), Bind('1', None, hotbar=True), 0.5, 4, get_attack_speed)
+fireborne_rupture = Spell(Vision('fireborne_rupture'), Bind('spacebar', None, hotbar=True), 0.5, 4, get_attack_speed)
 fireborne_rupture_flow = Spell(Vision('fireborne_rupture'), Bind('q', None), 0.5, 4, get_attack_speed)
 e_buff = Spell(Vision('e_buff'), Bind('shift+e', None), 0.5, 4, get_attack_speed)
 
@@ -65,9 +65,9 @@ def shai_buff_active():
     return False
 
 def pve(context):
-    #if e_buff.ready():
-    #    e_buff.cast(context)
-    if glorious_advance_1h.ready() and time.time() - glorious_advance_1h.shared_data.last_cast >= 17:
+    if e_buff.ready():
+        e_buff.cast(context)
+    elif glorious_advance_1h.ready() and time.time() - glorious_advance_1h.shared_data.last_cast >= 17:
         glorious_advance_1h.cast(context)
     elif fireborne_rupture.ready() and time.time() - fireborne_rupture.shared_data.last_cast >= 10:
         fireborne_rupture.cast(context)
