@@ -2,7 +2,7 @@ import time
 
 from sorc.succession import *
 import common.utils as utils
-from common.listener import Listener, Context
+from common.listener import Listener
 from common.spell import Spell
 
 spells_init = False

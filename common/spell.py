@@ -155,6 +155,8 @@ class HoldAndSpamSpell(Spell):
             print(f"Casting: {self.name}")
 
             self.bind.press()
+            # MINI DELAY
+            time.sleep(0.05)
             while(self.ready() and counter < counter_max and context.is_active()):
                 if counter > 0:
                     self.bind.release(kb_override=self.spam_bind.kb_input, ms_override=self.spam_bind.ms_input)

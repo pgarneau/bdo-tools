@@ -6,6 +6,8 @@ from common.combo import Combo
 from common.bind import Bind, hold_bind, hold_bind_release_early
 from common.vision import Vision
 
+from .utils import violation_handler, calamity_handler, imminent_handler
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # buffs
@@ -37,24 +39,26 @@ shadow_ignition = Spell(Vision('shadow_ignition'), Bind('shift+x', None), 0.5, 1
 shadow_hellfire_hotbar = Spell(Vision('shadow_hellfire'), Bind('1', None, hotbar=True), 0.6, 4, get_attack_speed)
 
 # Succession
-prime_claws_of_darkness_cancel = Spell(Vision('prime_claws_of_darkness'), Bind('w', 'left'), 0.1, 5, get_attack_speed)
-prime_claws_of_darkness = Spell(Vision('prime_claws_of_darkness'), Bind('w', 'left'), 1.15, 5, get_attack_speed)
+prime_claws_of_darkness_cancel = Spell(Vision('prime_claws_of_darkness'), Bind('w', 'left'), 0.25, 5, get_attack_speed)
+prime_claws_of_darkness = Spell(Vision('prime_claws_of_darkness'), Bind('w', 'left', hold_bind), 1.2, 5, get_attack_speed)
 prime_abyssal_flame = Spell(Vision('prime_abyssal_flame'), Bind(None, 'left+right'), 0.4, 7, get_attack_speed)
-prime_bloody_calamity = Spell(Vision('prime_bloody_calamity'), Bind('space', None, hold_bind), 0.1, 16, get_attack_speed)
-prime_bloody_calamity_cheat = NoCooldownSpell('prime_bloody_calamity', Bind('space', 'left', hold_bind_release_early), 0.55, get_attack_speed)
+prime_bloody_calamity = Spell(Vision('prime_bloody_calamity'), Bind('space', None, hold_bind), 0.2, 16, get_attack_speed)
+prime_bloody_calamity_cheat = NoCooldownSpell('prime_bloody_calamity', Bind('space', 'left', calamity_handler()), 0.45, get_attack_speed)
 prime_crow_flare = Spell(Vision('prime_crow_flare'), Bind('e', None), 0.45, 2, get_attack_speed)
 prime_dark_flame = Spell(Vision('prime_dark_flame'), Bind('s', 'left'), 0.55, 6, get_attack_speed)
 prime_darkness_released = Spell(Vision('prime_darkness_released'), Bind('w+f', None), 0.35, 6, get_attack_speed)
 prime_midnight_stinger = Spell(Vision('prime_midnight_stinger'), Bind('shift', 'left'), 0.2, 2, get_attack_speed)
 prime_shadow_eruption = Spell(Vision('prime_shadow_eruption'), Bind('shift+f', None), 0.25, 7, get_attack_speed)
-prime_turn_back_slash = Spell(Vision('prime_turn_back_slash'), Bind('s+c', None), 0.25, 5, get_attack_speed)
+prime_turn_back_slash = Spell(Vision('prime_turn_back_slash'), Bind('s+c', None), 0.3, 5, get_attack_speed)
 ultimate_dark_flame = Spell(Vision('ultimate_dark_flame'), Bind('s', 'left'), 1, 9, get_attack_speed)
 ultimate_shadow_eruption = Spell(Vision('ultimate_shadow_eruption'), Bind('w', 'left'), 0.45, 9, get_attack_speed)
-prime_imminent_doom = HoldAndSpamSpell(Vision('imminent_doom'), Bind('shift+e', None), Bind(None, 'left'), 0.2, 14, get_attack_speed)
-prime_violation = Spell(Vision('prime_violation'), Bind('w+c', None), 0.7, 6, get_attack_speed)
-prime_violation_claw = Spell(Vision('prime_violation'), Bind('c', None), 0.7, 6, get_attack_speed)
+# prime_imminent_doom = HoldAndSpamSpell(Vision('imminent_doom'), Bind('shift+e', None, imminent_handler()), Bind(None, 'left+right'), 0.2, 14, get_attack_speed)
+prime_dream_of_doom = Spell(Vision('prime_dream_of_doom'), Bind('shift+e', None), 0, 14, get_attack_speed)
+prime_dream_of_doom_cheat = NoCooldownSpell('prime_dream_of_doom', Bind(None, 'left', imminent_handler()), 0.15, get_attack_speed)
+prime_violation = Spell(Vision('prime_violation'), Bind('w+c', None, violation_handler()), 0.7, 6, get_attack_speed)
+prime_violation_claw = Spell(Vision('prime_violation'), Bind('c', None, violation_handler()), 0.7, 6, get_attack_speed)
 shadow_hellfire = Spell(Vision('shadow_hellfire'), Bind(None, 'right', hold_bind_release_early), 0.6, 4, get_attack_speed)
-dark_tendrils = Spell(Vision('dark_tendrils'), Bind('s+e', None), 1.4, 11, get_attack_speed)
+dark_tendrils = Spell(Vision('dark_tendrils'), Bind('s+e', None), 1.45, 11, get_attack_speed)
 prime_black_wave = HoldAndSpamSpell(Vision('prime_black_wave'), Bind('s', None, hold_bind), Bind(None, 'right+left'), 1.7, 8, get_attack_speed)
 
 iframe_right = Iframe(Bind('shift+d', None), 0.6, get_attack_speed)
@@ -65,43 +69,10 @@ link_spells(prime_claws_of_darkness_cancel, prime_claws_of_darkness)
 link_spells(dark_tendrils, dark_tendrils_hotbar)
 link_spells(shadow_hellfire, shadow_hellfire_hotbar)
 
-# PRE TBS Cancels
-# midnight stinger
-# Crow Flare
-# shadow ignition
-# engulfing shadow
-
-# Movement Spell Cancels (GENERIC CANCELS, hellfire after imminent)
-# midnight stinger
-# Crow flare
-# shadow ignition
-# engulfind shadow
-# Violation
-# shadow hellfire (only imminent)
-
-# Darkness Released Cancels
-# midnight stinger
-# Crow flare
-# shadow ignition
-# engulfing shadow
-
-# POST TBS Exclusive spells
-# TBS
-# Calamity
-
-# PRE Calamity Skills
-# midnight stinger
-# violation
-# crow flare
-# shadow eruption
-# TBS
-
-# PRE Hellfire Skills
-# Imminent, midnight Stinger, crow, engulfing, abyssal
-
 # Combos
 # Generic Combos
 claws_vio_combo = Combo([prime_claws_of_darkness_cancel, prime_violation_claw])
+prime_imminent_doom = Combo([prime_dream_of_doom, prime_dream_of_doom_cheat])
 
 # TBS Combos
 midnight_tbs = Combo([prime_midnight_stinger, prime_turn_back_slash])
@@ -118,28 +89,14 @@ violation_calamity = Combo([prime_violation, prime_bloody_calamity, prime_bloody
 eruption_calamity = Combo([prime_shadow_eruption, prime_bloody_calamity, prime_bloody_calamity_cheat])
 crow_calamity = Combo([prime_crow_flare, prime_bloody_calamity, prime_bloody_calamity_cheat])
 
-
 # Suc Combos
 midnight_calamity_combo = Combo([prime_midnight_stinger, prime_bloody_calamity, prime_bloody_calamity_cheat])
-# midnight_calamity_ignition_combo = Combo([prime_midnight_stinger, prime_bloody_calamity, prime_bloody_calamity_cheat, shadow_ignition])
-# midnight_calamity_engulfing_combo = Combo([prime_midnight_stinger, prime_bloody_calamity, prime_bloody_calamity_cheat, engulfing_shadow])
 imminent_midnight_combo = Combo([prime_imminent_doom, prime_midnight_stinger])
-# imminent_hellfire_combo = Combo([prime_imminent_doom, shadow_hellfire])
-# imminent_ignition_combo = Combo([prime_imminent_doom, shadow_ignition])
 blackwave_eruption_combo = Combo([prime_black_wave, ultimate_shadow_eruption])
-# eruption_combo = Combo([prime_shadow_eruption, ultimate_shadow_eruption])
-# darkness_crow_tbs_abyssal_combo = Combo([prime_darkness_released, prime_crow_flare, prime_turn_back_slash, prime_abyssal_flame])
-# crow_tbs_abyssal_combo = Combo([prime_crow_flare, prime_turn_back_slash, prime_abyssal_flame])
-# crow_tbs_claw_eruption_combo = Combo([prime_crow_flare, prime_turn_back_slash, prime_claws_of_darkness_cancel, ultimate_shadow_eruption])
 midnight_claw_eruption_combo = Combo([prime_midnight_stinger, ultimate_shadow_eruption])
 full_claw_eruption_combo = Combo([prime_claws_of_darkness, ultimate_shadow_eruption])
-# darkness_midnight_combo = Combo([prime_darkness_released, prime_midnight_stinger])
-# darkness_ignition_combo = Combo([prime_darkness_released, shadow_ignition])
-# darkness_engulfing_combo = Combo([prime_darkness_released, engulfing_shadow])
-# eruption_midnight_combo = Combo([prime_shadow_eruption, prime_midnight_stinger])
-# eruption_ignition_combo = Combo([prime_shadow_eruption, shadow_ignition])
-# eruption_engulfing_combo = Combo([prime_shadow_eruption, engulfing_shadow])
 
+# Prime Shadow Eruption Combos
 midnight_double_eruption = Combo([prime_midnight_stinger, prime_shadow_eruption, ultimate_shadow_eruption])
 midnight_eruption = Combo([prime_midnight_stinger, prime_shadow_eruption])
 
@@ -212,7 +169,8 @@ def pve(context, state):
             return [False, True, True, True, False, False]
     
     # DPS
-    elif prime_imminent_doom.ready():
+    # DoD cheat for cooldown
+    elif prime_imminent_doom.ready() and time.time() - prime_dream_of_doom.shared_data.last_cast >= 14:
         if prime_imminent_doom.cast(context):
             return [True, True, False, False, False, False]
     
@@ -244,8 +202,7 @@ def pve(context, state):
     elif state[4] and claw_eruption.ready():
         claw_eruption.cast(context)
     elif state[4] and prime_abyssal_flame.ready():
-        if prime_abyssal_flame.cast(context):
-            return [False, True, False, False, False, False]
+        prime_abyssal_flame.cast(context)
     elif midnight_tbs.ready():
         if midnight_tbs.cast(context):
             return [False, False, False, False, True, False]
