@@ -48,8 +48,7 @@ def custom_mouse_handler(x, y, delay, absolute=False, mouse_click=False, handler
                     # print(f"Moving: {delta_x}, {delta_y}")
                     mouse.move(delta_x, delta_y, False)
                     # Important small delay to allow mouse to reset
-                    delay = delay - 0.05
-                    time.sleep(0.05)
+                    time.sleep(0.02)
                     # print(mouse.get_position())
                     mouse.move(x - delta_x, y - delta_y, False)
                 else:

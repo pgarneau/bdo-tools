@@ -21,7 +21,7 @@ def reposition_left(context):
     iframe_left.cast(context)
 
 def iframe_forward(context):
-    iframe_forward_180.cast(context, debug=True)
+    iframe_forward_180.cast(context)
 
 listener = Listener(debug=False)
 listener.register_keybind('f24', main)
