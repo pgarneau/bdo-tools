@@ -1,5 +1,5 @@
 import time
-from pynput import keyboard
+from pynput import keyboard, mouse
 import threading
 import keyboard as kb
 
@@ -71,6 +71,22 @@ class KeyBind:
                 print(f"Error in is_pressed: {e}")
             return False
 
+class MouseBind:
+    mouse_button_dict = {
+        'middle': '519_0',
+        'button4': '523_65536',
+        'button5': '523_131072'
+    }
+
+    def __init__(self, mouse_input, callback, name):
+        self.input = self.mouse_button_dict[mouse_input]
+        self.callback = callback
+        self.name = name
+        self.is_active = False
+    
+    def is_pressed(self, current_keys):
+        return self.input in current_keys
+
 class Listener:
 
     def __init__(self, debug=False):
@@ -81,6 +97,7 @@ class Listener:
             on_release=self.on_release, 
             win32_event_filter=self.win32_event_filter
         )
+        self.mouse_listener = mouse.Listener(win32_event_filter=self.win32_event_filter)
 
         self.main_keybinds = {}
         self.override_keybinds = {}
@@ -117,6 +134,14 @@ class Listener:
                 
         return keybind_id
     
+    def register_mouse_override(self, mouse_button, callback):
+        keybind_id = f"override_{len(self.override_keybinds)}"
+        self.override_keybinds[keybind_id] = MouseBind(mouse_button, callback, keybind_id) 
+        if self.debug:
+            print(f"Registered override mouse keybind '{keybind_id}': {mouse_button}")
+        
+        return keybind_id
+
     def update_keybind_states(self):
         if self.debug:
             print("Updating keybind states")
@@ -246,19 +271,40 @@ class Listener:
 
         # Log all events to track what's happening
         if self.debug:
-            print(f"Event: msg={msg}, scanCode={data.scanCode}, keys={self.current_keys}")
+            if msg < 300:
+                print(f"Event: msg={msg}, scanCode={data.scanCode}, keys={self.current_keys}")
+            elif msg not in (512, 522):
+                print(f"Event: msg={msg}, mouseData={data.mouseData}, keys={self.current_keys}")
 
         if msg == 256:  # Key down
             self.current_keys.add(data.scanCode)
         elif msg == 257:  # Key up
             self.current_keys.discard(data.scanCode)
+        elif msg in (519, 523):
+            self.current_keys.add(f"{msg}_{data.mouseData}")
+        elif msg in (520, 524):
+            self.current_keys.discard(f"{msg-1}_{data.mouseData}")
+        # elif msg == 519:  # Mouse middle down
+        #     self.current_keys.add('middle')
+        # elif msg == 520:  # Mouse middle up
+        #     self.current_keys.discard('middle')
+        # elif msg == 523:  # Mouse back or forward down
+        #     if data.mouseData == 65536:
+        #         self.current_keys.add('button4')
+        #     elif data.mouseData == 131072:
+        #         self.current_keys.add('button5')
+        # elif msg == 524:  # Mouse back or forward up
+        #     if data.mouseData == 65536:
+        #         self.current_keys.discard('button4')
+        #     elif data.mouseData == 131072:
+        #         self.current_keys.discard('button5')
         
         # Process key state changes regardless of whether we handle callbacks
         if old_keys != self.current_keys:
             self.update_keybind_states()
 
         # Handle callbacks separately - this is important!
-        if msg == 256:  # Key down only
+        if msg == 256 or msg in (519, 523):  # Key down only
             # Try running override callbacks - and suppress them from reaching the game
             # ONLY if a main thread is running
             for keybind_id, keybind in self.override_keybinds.items():
@@ -297,6 +343,7 @@ class Listener:
 
     def start(self):
         self.listener.start()
+        self.mouse_listener.start()
         if self.debug:
             print("Keyboard listener started")
     
@@ -305,6 +352,10 @@ class Listener:
             self.listener.stop()
             if self.debug:
                 print("Keyboard listener stopped")
+        if self.mouse_listener:
+            self.mouse_listener.stop()
+            if self.debug:
+                print("Mouse listener stopped")
         
         # Cancel any running actions
         self.current_context.cancel()

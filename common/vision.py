@@ -100,16 +100,16 @@ class Vision:
                                 lineType=line_type, thickness=2)
             if debug_mode:
                 print("Found something")
-                # cv.imshow('Matches', image)
+                cv.imshow('Matches', image)
                 # cv.waitKey(500)
                 # cv.destroyAllWindows()
                 # cv.waitKey(0)
                 # cv.destroyAllWindows()
 
-        if debug_mode:
-            cv.imshow('Matches', image)
-            cv.waitKey(2000)
-            cv.destroyAllWindows()
+        # if debug_mode:
+        #     cv.imshow('Matches', image)
+        #     cv.waitKey(2000)
+        #     cv.destroyAllWindows()
 
         return coordinates
     

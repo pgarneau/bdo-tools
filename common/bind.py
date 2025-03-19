@@ -29,14 +29,15 @@ def custom_mouse_handler(x, y, delay, absolute=False, mouse_click=False, handler
             bind.mouse_suppressed = False
             if not absolute:
                 current_mouse_x, current_mouse_y = mouse.get_position()
+                print(current_mouse_x, current_mouse_y)
                 screen_width, screen_height = win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1)
                 target_x = current_mouse_x + x
                 target_y = current_mouse_y + y
 
-                min_x = int(0.01 * screen_width)
-                max_x = int(0.99 * screen_width)
-                min_y = int(0.01 * screen_height)
-                max_y = int(0.99 * screen_height)
+                min_x = 15
+                max_x = screen_width - 15
+                min_y = 15
+                max_y = screen_height - 15
 
                 first_x = max(min(target_x, max_x), min_x)
                 first_y = max(min(target_y, max_y), min_y)
@@ -44,7 +45,12 @@ def custom_mouse_handler(x, y, delay, absolute=False, mouse_click=False, handler
                 if target_x != first_x or target_y != first_y:
                     delta_x = first_x - current_mouse_x
                     delta_y = first_y - current_mouse_y
+                    # print(f"Moving: {delta_x}, {delta_y}")
                     mouse.move(delta_x, delta_y, False)
+                    # Important small delay to allow mouse to reset
+                    delay = delay - 0.05
+                    time.sleep(0.05)
+                    # print(mouse.get_position())
                     mouse.move(x - delta_x, y - delta_y, False)
                 else:
                     mouse.move(x, y, False)

@@ -14,3 +14,11 @@ def imminent_handler():
 def calamity_handler():
     global width, height
     return custom_mouse_handler(width / 2, height * 0.75, 0.05, True, True, 'hold_and_release_early')
+
+def midnight_handler():
+    global width, height
+    return custom_mouse_handler(width / 2, height * 0.75, 0.05, True, True, 'release')
+
+def camera_180():
+    global width, height
+    return custom_mouse_handler(width, 0, 0.05, False, False, 'release')
