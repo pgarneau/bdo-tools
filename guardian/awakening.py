@@ -68,7 +68,7 @@ def shai_buff_active():
 def pve(context):
     if e_buff.ready():
         e_buff.cast(context)
-    elif glorgodcombo.ready():
+    elif glorious_advance_1h.ready() and god_incinerator_accel.ready():
         glorgodcombo.cast(context)
     elif god_incinerator_combo.ready():
         god_incinerator_combo.cast(context)
