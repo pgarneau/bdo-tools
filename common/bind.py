@@ -3,6 +3,7 @@ import keyboard
 import mouse
 import pynput.keyboard as kboard
 from pynput.keyboard import Key, KeyCode
+from pynput.mouse import Button, Controller
 import win32api
 import pynput
 
@@ -105,6 +106,7 @@ class Bind:
         self.pressed_ms_keys = []
         self.mouse_listener = None
         self.mouse_suppressed = False
+        self.mouse_controller = Controller()
     
     def press(self, kb_override=None, ms_override=None):
         if kb_override is None and ms_override is None:
@@ -115,7 +117,8 @@ class Bind:
             if self.ms_input is not None:
                 ms_input_parts = self.ms_input.split('+')
                 for part in ms_input_parts:
-                    mouse.press(part)
+                    self.mouse_controller.press(Button[part])
+                    # mouse.press(part)
                     self.pressed_ms_keys.append(part)
                     if len(ms_input_parts) > 1:
                         time.sleep(0.02)
@@ -127,7 +130,8 @@ class Bind:
             if ms_override is not None:
                 ms_override_parts = ms_override.split('+')
                 for part in ms_override_parts:
-                    mouse.press(part)
+                    self.mouse_controller.press(Button[part])
+                    # mouse.press(part)
                     self.pressed_ms_keys.append(part)
                     if len(ms_override_parts) > 1:
                         time.sleep(0.02)
@@ -141,7 +145,8 @@ class Bind:
                 keyboard.release(key)
                 self.pressed_kb_keys.remove(key)
             for key in list(self.pressed_ms_keys):
-                mouse.release(key)
+                self.mouse_controller.release(Button[key])
+                # mouse.release(key)
                 self.pressed_ms_keys.remove(key)
         else:
             if kb_override is not None:
@@ -150,7 +155,8 @@ class Bind:
             if ms_override is not None:
                 ms_input_parts = ms_override.split('+')
                 for part in ms_input_parts:
-                    mouse.release(part)
+                    self.mouse_controller.release(Button[part])
+                    # mouse.release(part)
                     self.pressed_ms_keys.remove(part)
 
     def _win32_event_filter(self, msg, data):

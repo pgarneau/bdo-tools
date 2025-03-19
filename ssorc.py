@@ -20,13 +20,16 @@ def reposition_right(context):
 def reposition_left(context):
     iframe_left.cast(context)
 
-def iframe_forward(context):
-    iframe_forward_180.cast(context)
+def iframe_forward_mmb(context):
+    iframe_forward_180_mmb.cast(context)
+
+def iframe_forward_button4(context):
+    iframe_forward_180_button4.cast(context)
 
 listener = Listener(debug=False)
 listener.register_keybind('f24', main)
-listener.register_mouse_override('middle', iframe_forward)
-listener.register_mouse_override('button4', iframe_forward)
+listener.register_mouse_override('middle', iframe_forward_mmb)
+listener.register_mouse_override('button4', iframe_forward_button4)
 # listener.register_keybind('shift+d', reposition_right, override=True)
 # listener.register_keybind('shift+a', reposition_left, override=True)
 # listener.register_keybind('f22', iframe_forward)

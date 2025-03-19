@@ -67,7 +67,8 @@ prime_black_wave = HoldAndSpamSpell(Vision('prime_black_wave'), Bind('s', None, 
 
 iframe_right = Iframe(Bind('shift+d', None), 0.6, get_attack_speed)
 iframe_left = Iframe(Bind('shift+a', None), 0.6, get_attack_speed)
-iframe_forward_180 = Iframe(Bind(None, 'middle', camera_180()), 0.6)
+iframe_forward_180_mmb = Iframe(Bind(None, 'middle', camera_180()), 0.6)
+iframe_forward_180_button4 = Iframe(Bind(None, 'x1', camera_180()), 0.6)
 
 link_spells(prime_violation, prime_violation_claw)
 link_spells(prime_claws_of_darkness_cancel, prime_claws_of_darkness)
