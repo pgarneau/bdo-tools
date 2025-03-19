@@ -32,15 +32,15 @@ def get_attack_speed():
     return speed
 
 # Pre-awak
-magnus = Spell(Vision('magnus'), Bind('s+f', None), 0.48, 9, get_attack_speed)
+magnus = Spell(Vision('magnus'), Bind('s+f', None), 0.49, 9, get_attack_speed)
 squall_shot = Spell(Vision('squall_shot'), Bind('shift+x', None), 0.9, 8, get_attack_speed)
-flow_bypassing_wind = Spell(Vision('flow_bypassing_wind'), Bind('shift','right'), 0.43, 6, get_attack_speed)
+flow_bypassing_wind = Spell(Vision('flow_bypassing_wind'), Bind('shift','right'), 0.45, 6, get_attack_speed)
 
 # Succession
 prime_regeneration = Spell(Vision('prime_regeneration'), Bind('s+c', None), 0.75, 7, get_attack_speed)
 prime_natures_tremble = Spell(Vision('prime_natures_tremble'), Bind('w+c', None), 0.75, 7, get_attack_speed)
 prime_penetrating_wind = Spell(Vision('prime_penetrating_wind'), Bind('shift', 'right'), 0.09, 7, get_attack_speed)
-prime_razor_wind = Spell(Vision('prime_razor_wind'), Bind('e', 'left', hold_bind), 2.3, 8, get_attack_speed)
+prime_razor_wind = Spell(Vision('prime_razor_wind'), Bind('e', 'left', hold_bind), 2.4, 8, get_attack_speed)
 prime_tearing_arrow = Spell(Vision('prime_tearing_arrow'), Bind('s+e', None), 0.1, 7, get_attack_speed)
 prime_tearing_arrow_cheat = NoCooldownSpell('prime_tearing_arrow', Bind(None, 'left', hold_bind), 1.25, get_attack_speed)
 prime_ultimate_blasting_gust = Spell(Vision('prime_ultimate_blasting_gust'), Bind(None, 'left', hold_bind), 1.9, 8, get_attack_speed)
@@ -50,9 +50,9 @@ e_buff = Spell(Vision('e_buff'), Bind('shift+e', None), 0.9, 180, get_attack_spe
 prime_hop = NoCooldownSpell('prime_hop', Bind('w', 'right'), 0.7, get_attack_speed)
 
 # Combos
-combo_part_1 = Combo([prime_razor_wind, prime_penetrating_wind, flow_bypassing_wind, prime_shotgun, magnus])
+combo_part_1 = Combo([prime_razor_wind, prime_penetrating_wind, flow_bypassing_wind, prime_shotgun, magnus, prime_hop])
 combo_part_2 = Combo([prime_regeneration, prime_tearing_arrow, prime_tearing_arrow_cheat, prime_hop])
-combo_part_3 = Combo([squall_shot, prime_ultimate_blasting_gust])
+combo_part_3 = Combo([squall_shot, prime_ultimate_blasting_gust, prime_hop])
 
 
 def crit_buff_active():
