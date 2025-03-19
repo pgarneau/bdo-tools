@@ -7,12 +7,12 @@ from common.spell import Spell
 
 spells_init = False
 var = utils.Variables()
-var.state = 0
+var.state = [False, False, False, False, False, False]
 var.last_cast = 0
 
 
 def main(context):
-    pve(context)
+    var.state = pve(context, var.state)
 
 def reposition_right(context):
     iframe_right.cast(context)
