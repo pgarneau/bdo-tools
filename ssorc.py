@@ -26,6 +26,7 @@ def iframe_forward(context):
 listener = Listener(debug=False)
 listener.register_keybind('f24', main)
 listener.register_mouse_override('middle', iframe_forward)
+listener.register_mouse_override('button4', iframe_forward)
 # listener.register_keybind('shift+d', reposition_right, override=True)
 # listener.register_keybind('shift+a', reposition_left, override=True)
 # listener.register_keybind('f22', iframe_forward)
