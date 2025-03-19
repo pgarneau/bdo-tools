@@ -14,10 +14,12 @@ def apply_speed_modifier(base, modifier):
 
 def custom_mouse_handler(x, y, delay, absolute=False, mouse_click=False, handler_type='release'):
     def handler(bind, context, hold_time, modifier):
+        local_delay = delay
+
         if handler_type == 'hold_and_release_early':
             start_time = time.time()
             calculated_hold_time = apply_speed_modifier(hold_time, modifier)
-            while(context.is_active() and time.time() - start_time < calculated_hold_time * 0.7 - delay - 0.05):
+            while(context.is_active() and time.time() - start_time < calculated_hold_time * 0.7 - local_delay - 0.05):
                 time.sleep(0.05)
         bind.release()
         bind.mouse_listener = pynput.mouse.Listener(win32_event_filter=bind._win32_event_filter)
@@ -26,36 +28,75 @@ def custom_mouse_handler(x, y, delay, absolute=False, mouse_click=False, handler
         try:
             if mouse_click:
                 keyboard.send('left ctrl')
+                local_delay -= 0.05
                 time.sleep(0.05)
             bind.mouse_suppressed = False
             if not absolute:
                 current_mouse_x, current_mouse_y = mouse.get_position()
-                print(current_mouse_x, current_mouse_y)
                 screen_width, screen_height = win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1)
                 target_x = current_mouse_x + x
                 target_y = current_mouse_y + y
 
+                # Define boundary constants
                 min_x = 15
                 max_x = screen_width - 15
                 min_y = 15
                 max_y = screen_height - 15
 
-                first_x = max(min(target_x, max_x), min_x)
-                first_y = max(min(target_y, max_y), min_y)
+                # Initial remaining calculation
+                remaining_x = target_x - current_mouse_x
+                remaining_y = target_y - current_mouse_y
+                # print(f"Moving to: {target_x}, {target_y}")
 
-                if target_x != first_x or target_y != first_y:
-                    delta_x = first_x - current_mouse_x
-                    delta_y = first_y - current_mouse_y
-                    # print(f"Moving: {delta_x}, {delta_y}")
-                    mouse.move(delta_x, delta_y, False)
-                    # Important small delay to allow mouse to reset
-                    time.sleep(0.02)
-                    # print(mouse.get_position())
-                    mouse.move(x - delta_x, y - delta_y, False)
-                else:
-                    mouse.move(x, y, False)
+                # Counter to prevent infinite loops
+                move_counter = 0
+                max_moves = 20  # Safety limit
+                
+                while (abs(remaining_x) > 5 or abs(remaining_y) > 5) and move_counter < max_moves:
+                    # Initialize default values for bounded_x and bounded_y
+                    bounded_x = 0
+                    bounded_y = 0
+                    
+                    # Only calculate bounded_x if there's significant x movement needed
+                    if abs(remaining_x) > 5:
+                        # Calculate the target position after movement
+                        next_x = current_mouse_x + remaining_x
+                        
+                        # Constrain the target position to screen boundaries
+                        bounded_next_x = max(min(next_x, max_x), min_x)
+                        
+                        # Calculate the movement needed to reach the bounded position
+                        bounded_x = bounded_next_x - current_mouse_x
+                    
+                    # Only calculate bounded_y if there's significant y movement needed
+                    if abs(remaining_y) > 5:
+                        # Calculate the target position after movement
+                        next_y = current_mouse_y + remaining_y
+                        
+                        # Constrain the target position to screen boundaries
+                        bounded_next_y = max(min(next_y, max_y), min_y)
+                        
+                        # Calculate the movement needed to reach the bounded position
+                        bounded_y = bounded_next_y - current_mouse_y
+
+                    # print(f"Moving by: {bounded_x}, {bounded_y}")
+                    mouse.move(bounded_x, bounded_y, False)
+                    time.sleep(0.02)  # Reduced from 1.0 for faster response
+                    local_delay -= 0.02
+
+                    # print(f"Current: {mouse.get_position()}")
+                    current_mouse_x, current_mouse_y = mouse.get_position()
+                    
+                    # Update remaining movement
+                    remaining_x = remaining_x - bounded_x
+                    remaining_y = remaining_y - bounded_y
+                    # print(f"Remaining: {remaining_x}, {remaining_y}")
+                    
+                    # Increment counter for safety
+                    move_counter += 1
             else:
                 mouse.move(x, y, True)
+                
             if mouse_click:
                 mouse.click('left')
                 bind.mouse_suppressed = True
@@ -68,7 +109,7 @@ def custom_mouse_handler(x, y, delay, absolute=False, mouse_click=False, handler
 
         if handler_type == 'release':
             start_time = time.time()
-            while(context.is_active() and time.time() - start_time < apply_speed_modifier(hold_time, modifier) - delay - 0.05):
+            while(context.is_active() and time.time() - start_time < apply_speed_modifier(hold_time, modifier) - local_delay):
                 time.sleep(0.05)
     
     return handler

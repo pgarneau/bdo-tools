@@ -6,7 +6,7 @@ from common.combo import Combo
 from common.bind import Bind, hold_bind, hold_bind_release_early
 from common.vision import Vision
 
-from .utils import violation_handler, calamity_handler, imminent_handler, midnight_handler, camera_180
+from .utils import *
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -48,7 +48,8 @@ prime_bloody_calamity_cheat = NoCooldownSpell('prime_bloody_calamity', Bind('spa
 prime_crow_flare = Spell(Vision('prime_crow_flare'), Bind('e', None), 0.45, 2, get_attack_speed)
 prime_dark_flame = Spell(Vision('prime_dark_flame'), Bind('s', 'left'), 0.55, 6, get_attack_speed)
 prime_darkness_released = Spell(Vision('prime_darkness_released'), Bind('w+f', None), 0.35, 6, get_attack_speed)
-prime_midnight_stinger = Spell(Vision('prime_midnight_stinger'), Bind('shift', 'left', midnight_handler()), 0.2, 2, get_attack_speed)
+# prime_midnight_stinger = Spell(Vision('prime_midnight_stinger'), Bind('shift', 'left', midnight_handler()), 0.2, 2, get_attack_speed)
+prime_midnight_stinger = Spell(Vision('prime_midnight_stinger'), Bind('shift', 'left'), 0.2, 2, get_attack_speed)
 prime_shadow_eruption = Spell(Vision('prime_shadow_eruption'), Bind('shift+f', None), 0.25, 7, get_attack_speed)
 prime_turn_back_slash = Spell(Vision('prime_turn_back_slash'), Bind('s+c', None), 0.3, 5, get_attack_speed)
 ultimate_dark_flame = Spell(Vision('ultimate_dark_flame'), Bind('s', 'left'), 1, 9, get_attack_speed)
@@ -68,7 +69,7 @@ prime_black_wave = HoldAndSpamSpell(Vision('prime_black_wave'), Bind('s', None, 
 iframe_right = Iframe(Bind('shift+d', None), 0.6, get_attack_speed)
 iframe_left = Iframe(Bind('shift+a', None), 0.6, get_attack_speed)
 iframe_forward_180_mmb = Iframe(Bind(None, 'middle', camera_180()), 0.6)
-iframe_forward_180_button4 = Iframe(Bind(None, 'x1', camera_180()), 0.6)
+iframe_forward_180_button4 = Iframe(Bind(None, 'x1', camera_180_1080p_1200dpi()), 0.6)
 
 link_spells(prime_violation, prime_violation_claw)
 link_spells(prime_claws_of_darkness_cancel, prime_claws_of_darkness)

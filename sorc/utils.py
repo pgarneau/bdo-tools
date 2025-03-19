@@ -22,3 +22,7 @@ def midnight_handler():
 def camera_180():
     global width, height
     return custom_mouse_handler(width, 0, 0.05, False, False, 'release')
+
+def camera_180_1080p_1200dpi():
+    global width, height
+    return custom_mouse_handler(width*2, 0, 0.05, False, False, 'release')
