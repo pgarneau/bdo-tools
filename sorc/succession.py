@@ -33,9 +33,9 @@ def get_attack_speed():
     return speed
 
 # Pre-awak
-dark_tendrils_hotbar = Spell(Vision('dark_tendrils'), Bind('2', None, hotbar=True), 1.4, 11, get_attack_speed)
+dark_tendrils_hotbar = Spell(Vision('dark_tendrils'), Bind('2', None, hotbar=True), 1.4, 8, get_attack_speed)
 engulfing_shadow = Spell(Vision('engulfing_shadow'), Bind('shift+z', None), 0.65, 7, get_attack_speed)
-shadow_ignition = Spell(Vision('shadow_ignition'), Bind('shift+x', None), 0.5, 10, get_attack_speed)
+shadow_ignition = Spell(Vision('shadow_ignition'), Bind('shift+x', None), 0.5, 8, get_attack_speed)
 shadow_hellfire_hotbar = Spell(Vision('shadow_hellfire'), Bind('1', None, hotbar=True), 0.6, 4, get_attack_speed)
 
 # Succession
@@ -46,13 +46,13 @@ prime_bloody_calamity = Spell(Vision('prime_bloody_calamity'), Bind('space', Non
 # prime_bloody_calamity_cheat = NoCooldownSpell('prime_bloody_calamity', Bind('space', 'left', calamity_handler()), 0.25, get_attack_speed)
 prime_bloody_calamity_cheat = NoCooldownSpell('prime_bloody_calamity', Bind('space', 'left', hold_bind_release_early), 0.25, get_attack_speed)
 prime_crow_flare = Spell(Vision('prime_crow_flare'), Bind('e', None), 0.45, 2, get_attack_speed)
-prime_dark_flame = Spell(Vision('prime_dark_flame'), Bind('s', 'left'), 0.55, 6, get_attack_speed)
+prime_dark_flame = Spell(Vision('prime_dark_flame'), Bind('s', 'left'), 0.55, 8, get_attack_speed)
 prime_darkness_released = Spell(Vision('prime_darkness_released'), Bind('w+f', None), 0.35, 6, get_attack_speed)
 # prime_midnight_stinger = Spell(Vision('prime_midnight_stinger'), Bind('shift', 'left', midnight_handler()), 0.2, 2, get_attack_speed)
 prime_midnight_stinger = Spell(Vision('prime_midnight_stinger'), Bind('shift', 'left'), 0.2, 2, get_attack_speed)
 prime_shadow_eruption = Spell(Vision('prime_shadow_eruption'), Bind('shift+f', None), 0.25, 7, get_attack_speed)
 prime_turn_back_slash = Spell(Vision('prime_turn_back_slash'), Bind('s+c', None), 0.3, 5, get_attack_speed)
-ultimate_dark_flame = Spell(Vision('ultimate_dark_flame'), Bind('s', 'left'), 1, 9, get_attack_speed)
+ultimate_dark_flame = Spell(Vision('ultimate_dark_flame'), Bind('s', 'left'), 1, 8, get_attack_speed)
 ultimate_shadow_eruption = Spell(Vision('ultimate_shadow_eruption'), Bind('w', 'left'), 0.45, 9, get_attack_speed)
 # prime_imminent_doom = HoldAndSpamSpell(Vision('imminent_doom'), Bind('shift+e', None, imminent_handler()), Bind(None, 'left+right'), 0.2, 14, get_attack_speed)
 prime_dream_of_doom = Spell(Vision('prime_dream_of_doom'), Bind('shift+e', None), 0, 14, get_attack_speed)
@@ -63,7 +63,7 @@ prime_dream_of_doom_cheat = NoCooldownSpell('prime_dream_of_doom', Bind(None, 'l
 prime_violation = Spell(Vision('prime_violation'), Bind('w+c', None), 0.7, 6, get_attack_speed)
 prime_violation_claw = Spell(Vision('prime_violation'), Bind('c', None), 0.7, 6, get_attack_speed)
 shadow_hellfire = Spell(Vision('shadow_hellfire'), Bind(None, 'right', hold_bind_release_early), 0.6, 4, get_attack_speed)
-dark_tendrils = Spell(Vision('dark_tendrils'), Bind('s+e', None), 1.45, 11, get_attack_speed)
+dark_tendrils = Spell(Vision('dark_tendrils'), Bind('s+e', None), 1.45, 8, get_attack_speed)
 prime_black_wave = HoldAndSpamSpell(Vision('prime_black_wave'), Bind('s', None, hold_bind), Bind(None, 'right+left'), 1.7, 8, get_attack_speed)
 
 iframe_right = Iframe(Bind('shift+d', None), 0.6, get_attack_speed)

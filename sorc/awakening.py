@@ -55,10 +55,10 @@ link_spells(turn_back_slash, turn_back_slash_cancel)
 link_spells(vile_plan, vile_plan_cancel)
 
 # Pre-awak
-dark_tendrils_hotbar = Spell(Vision('dark_tendrils'), Bind('2', None, hotbar=True), 1.4, 11, get_attack_speed)
+dark_tendrils_hotbar = Spell(Vision('dark_tendrils'), Bind('2', None, hotbar=True), 1.4, 8, get_attack_speed)
 midnight_stinger = Spell(Vision('midnight_stinger'), Bind('shift', 'left'), 0.4, 2, get_attack_speed)
 engulfing_shadow = Spell(Vision('engulfing_shadow'), Bind('shift+z', None), 0.65, 7, get_attack_speed)
-shadow_ignition = Spell(Vision('shadow_ignition'), Bind('shift+x', None), 0.5, 10, get_attack_speed)
+shadow_ignition = Spell(Vision('shadow_ignition'), Bind('shift+x', None), 0.5, 8, get_attack_speed)
 shadow_hellfire_hotbar = Spell(Vision('shadow_hellfire'), Bind('1', None, hotbar=True), 0.6, 4, get_attack_speed)
 wings_of_the_crow = Spell(Vision('wings_of_the_crow'), Bind('w', 'right'), 0.45, 4, get_attack_speed)
 imminent_doom = Spell(Vision('imminent_doom'), Bind('shift+e', 'right'), 0.3, 18, get_attack_speed)
