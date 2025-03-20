@@ -3,6 +3,8 @@ import cv2 as cv
 import win32gui, win32ui, win32con, win32api
 from threading import Thread, Lock
 from .vision import Vision
+import keyboard
+import mouse
 import os
 
 class WindowCapture:
@@ -31,7 +33,11 @@ class WindowCapture:
         self.alch_stone_vision = Vision('alch_stone', base_path=os.path.join(current_dir, 'spells'))
         self.simple_cron = Vision('simple_cron_meal', base_path=os.path.join(current_dir, 'spells'))
         self.exquisite_cron = Vision('exquisite_cron_meal', base_path=os.path.join(current_dir, 'spells'))
+        
+        # Initialize region storage
+        self.regions = {}
         self.buff_location = None
+        self.skill_log_location = None
 
         # find the handle for the window we want to capture
         if window_name is None:
@@ -40,6 +46,16 @@ class WindowCapture:
             self.hwnd = win32gui.FindWindow(None, window_name)
             if not self.hwnd:
                 raise Exception('Window not found: {}'.format(window_name))
+    
+    def initialize_regions(self):
+        """Initialize regions from config"""
+        try:
+            # Import locally to avoid circular import
+            from .config_manager import config_manager
+            return config_manager.initialize_window_regions(self)
+        except ImportError:
+            print("WARNING: Could not load config_manager. UI regions not initialized.")
+            return {}
     
     def get_screenshot(self, x, y, w, h, scale=False):
         # Scale coordinates based on current screen resolution
@@ -123,24 +139,45 @@ class WindowCapture:
         return isolated
     
     def get_buffs(self):
+        """Get screenshot of buffs region"""
+        try:
+            # First try to use configured region
+            if hasattr(self, 'regions') and self.regions and "buffs" in self.regions:
+                x, y, w, h = self.regions["buffs"]
+                self.buff_location = (x, y)
+                return self.get_screenshot(x, y, w, h)
+        except (AttributeError, KeyError, ValueError):
+            pass
+            
+        # Fall back to old approach
         if not self.buff_location:
             full_screen_ss = self.get_screenshot_fullscreen()
             for vision in [self.simple_cron, self.exquisite_cron, self.alch_stone_vision]:
                 coords = vision.find(full_screen_ss)
                 if len(coords) > 0 and len(coords[0]) > 2:
                     self.buff_location = coords[0][0] - 100, coords[0][1] - 65
+                    
+                    # Update regions dict if it exists
+                    if hasattr(self, 'regions'):
+                        self.regions["buffs"] = (self.buff_location[0], self.buff_location[1], 700, 60)
+                        
+                    # Try to update config
+                    try:
+                        from .config_manager import config_manager
+                        config_manager.set("ui_regions.buffs", (self.buff_location[0], self.buff_location[1], 700, 60))
+                    except ImportError:
+                        pass
+                    
                     break
         
         w = 700
         h = 60
-        # cv.imshow('gay', self.get_screenshot(self.buff_location[0], self.buff_location[1], w, h))
-        # cv.waitKey(0)
-        # print(self.buff_location)
-        # x = 470
-        # y = 1070
         
+        if not self.buff_location:
+            return self.get_screenshot_fullscreen()
+            
         return self.get_screenshot(self.buff_location[0], self.buff_location[1], w, h)
-
+    
     def get_skills(self):
         # Use the fullscreen method for this one since it already uses system metrics
         return self.get_screenshot_fullscreen()
@@ -194,44 +231,56 @@ class WindowCapture:
         h = 200
 
         return self.get_screenshot(x, y, w, h, scale=True)
-
-
-
-
-    # find the name of the window you're interested in.
-    # once you have it, update window_capture()
-    # https://stackoverflow.com/questions/55547940/how-to-get-a-list-of-the-name-of-every-open-window
-    @staticmethod
-    def list_window_names():
-        def winEnumHandler(hwnd, ctx):
-            if win32gui.IsWindowVisible(hwnd):
-                print(hex(hwnd), win32gui.GetWindowText(hwnd))
-        win32gui.EnumWindows(winEnumHandler, None)
-
-    # translate a pixel position on a screenshot image to a pixel position on the screen.
-    # pos = (x, y)
-    # WARNING: if you move the window being captured after execution is started, this will
-    # return incorrect coordinates, because the window position is only calculated in
-    # the __init__ constructor.
-    def get_screen_position(self, pos):
-        return (pos[0] + self.offset_x, pos[1] + self.offset_y)
     
-    def start(self):
-        self.stopped = False
-        t = Thread(target=self.run)
-        t.start()
+    def get_skill_log(self):
+        """Get screenshot of skill log region"""
+        try:
+            # First try to use configured region
+            if hasattr(self, 'regions') and self.regions and "skill_log" in self.regions:
+                x, y, w, h = self.regions["skill_log"]
+                self.skill_log_location = (x, y)
+                return self.get_screenshot(x, y, w, h)
+        except (AttributeError, KeyError, ValueError):
+            pass
+            
+        # Fall back to old approach
+        if not self.skill_log_location:
+            return self.get_screenshot_fullscreen()
+        
+        w = 200
+        h = 150
+        return self.get_screenshot(self.skill_log_location[0], self.skill_log_location[1], w, h)
+    
+    def get_region(self, region_name):
+        """
+        Get a region from the configured regions
+        
+        Args:
+            region_name: Name of the region
+            
+        Returns:
+            (x, y, w, h) tuple or None if not found
+            
+        Raises:
+            ValueError: If region is requested but not configured
+        """
+        if region_name in self.regions:
+            return self.regions[region_name]
+        
+        # If regions dict exists but doesn't have this region
+        if hasattr(self, 'regions') and self.regions is not None:
+            raise ValueError(f"Region '{region_name}' is not configured")
+            
+        # Regions dict doesn't exist yet - try to initialize
+        self.initialize_regions()
+            
+        # Check again after initialization
+        if region_name in self.regions:
+            return self.regions[region_name]
+        else:
+            raise ValueError(f"Region '{region_name}' is not configured")
 
-    def stop(self):
-        self.stopped = True
-
-    def run(self):
-        # TODO: you can write your own time/iterations calculation to determine how fast this is
-        while not self.stopped:
-            # get an updated image of the game
-            screenshot = self.get_screenshot()
-            # lock the thread while updating the results
-            self.lock.acquire()
-            self.screenshot = screenshot
-            self.lock.release()
-
+# Create singleton instance
 wincap = WindowCapture()
+# Initialize regions from config
+wincap.initialize_regions()

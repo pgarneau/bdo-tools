@@ -1,7 +1,7 @@
 import os
 import time
 from common.windowcapture import wincap
-from common.spell import Spell, NoCooldownSpell, link_spells, Iframe, HoldAndSpamSpell
+from common.spell import *
 from common.combo import Combo
 from common.bind import Bind, hold_bind, hold_bind_release_early
 from common.vision import Vision
@@ -68,8 +68,9 @@ prime_black_wave = HoldAndSpamSpell(Vision('prime_black_wave'), Bind('s', None, 
 
 iframe_right = Iframe(Bind('shift+d', None), 0.6, get_attack_speed)
 iframe_left = Iframe(Bind('shift+a', None), 0.6, get_attack_speed)
-iframe_forward_180_mmb = Iframe(Bind(None, 'middle', camera_180()), 0.6)
-iframe_forward_180_button4 = Iframe(Bind(None, 'x1', camera_180_1080p_1200dpi()), 0.6)
+iframe_forward_180_mmb = SkillLogSpell(Vision('night_crow'), Bind(None, 'middle', camera_180()), 0.2, get_attack_speed)
+iframe_forward_180_button4 = SkillLogSpell(Vision('night_crow'), Bind(None, 'x1', camera_180_1080p_1200dpi()), 0.2, get_attack_speed)
+
 
 link_spells(prime_violation, prime_violation_claw)
 link_spells(prime_claws_of_darkness_cancel, prime_claws_of_darkness)

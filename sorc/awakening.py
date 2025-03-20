@@ -49,7 +49,7 @@ vile_plan_cancel = Spell(Vision('vile_plan'), Bind('space', None), 0.4, 5, get_a
 violation = Spell(Vision('violation'), Bind('w', 'right'), 0.5, 6, get_attack_speed)
 violation_2 = NoCooldownSpell('violation', Bind('w', 'right'), 1.3, get_attack_speed)
 wings_of_the_crow_awak = Spell(Vision('wings_of_the_crow'), Bind('w+e', None), 0.45, 4, get_attack_speed)
-night_crow = Spell(Vision('night_crow'), Bind(None, 'middle'), 0.5, 1, get_attack_speed)
+night_crow_awak = Spell(Vision('night_crow_awak'), Bind(None, 'middle'), 0.5, 1, get_attack_speed)
 
 link_spells(turn_back_slash, turn_back_slash_cancel)
 link_spells(vile_plan, vile_plan_cancel)
@@ -70,7 +70,7 @@ iframe_right = Iframe(Bind('shift+d', None), 0.6, get_attack_speed)
 iframe_left = Iframe(Bind('shift+a', None), 0.6, get_attack_speed)
 
 # Combos
-tbs_blade_opener = Combo([night_crow, turn_back_slash_cancel, blade_of_darkness, soul_harvest, vile_plan_cancel])
+tbs_blade_opener = Combo([night_crow_awak, turn_back_slash_cancel, blade_of_darkness, soul_harvest, vile_plan_cancel])
 tbs_blade = Combo([turn_back_slash, blade_of_darkness])
 tbs_blade_soul_vile = Combo([turn_back_slash, blade_of_darkness, soul_harvest, vile_plan_cancel])
 tbs_blade_soul = Combo([turn_back_slash, blade_of_darkness, soul_harvest])

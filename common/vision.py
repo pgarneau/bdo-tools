@@ -3,6 +3,7 @@ import cv2 as cv
 import numpy as np
 import os
 
+SKILL_LOG_IMAGE_SCALE = 0.805
 
 class Vision:
     # constants
@@ -18,7 +19,7 @@ class Vision:
     threshold = 0.0
 
     # constructor
-    def __init__(self, name, threshold=0.96, method=cv.TM_SQDIFF_NORMED, base_path=None):
+    def __init__(self, name, threshold=0.96, method=cv.TM_SQDIFF_NORMED, base_path=None, scale=1):
         self.name = name
         if base_path:
             path = os.path.join(base_path, f"{name}.png")
@@ -40,13 +41,30 @@ class Vision:
         # TM_CCOEFF, TM_CCOEFF_NORMED, TM_CCORR, TM_CCORR_NORMED, TM_SQDIFF, TM_SQDIFF_NORMED
         self.method = method
 
-    def find(self, haystack_img, debug_mode=None):
+        # If you need to scale the base image
+        self.scale = scale
+
+    def find(self, haystack_img, debug=False):
         # make a copy of the image
         image = haystack_img.copy()
-        # run the OpenCV algorithm
-        result = cv.matchTemplate(image, self.base, self.method, mask=self.alpha)
-        # for x in result:
-        #     print(x)
+        
+        if self.scale != 1.0:
+            new_w = int(self.needle_w * self.scale)
+            new_h = int(self.needle_h * self.scale)
+
+            scaled_base = cv.resize(self.base, (new_w, new_h), interpolation=cv.INTER_AREA)
+            scaled_alpha = cv.resize(self.alpha, (new_w, new_h), interpolation=cv.INTER_AREA)
+
+            result = cv.matchTemplate(image, scaled_base, self.method, mask=scaled_alpha)
+
+            needle_w = new_w
+            needle_h = new_h
+        else:
+            # run the OpenCV algorithm
+            result = cv.matchTemplate(image, self.base, self.method, mask=self.alpha)
+            needle_w = self.needle_w
+            needle_h = self.needle_h
+
 
         # Get the all the positions from the match result that exceed our threshold
         # locations = np.where(result >= threshold)
@@ -59,7 +77,7 @@ class Vision:
         # First we need to create the list of [x, y, w, h] rectangles
         rectangles = []
         for loc in locations:
-            rect = [int(loc[0]), int(loc[1]), self.needle_w, self.needle_h]
+            rect = [int(loc[0]), int(loc[1]), needle_w, needle_h]
             # Add every box to the list twice in order to retain single (non-overlapping) boxes
             rectangles.append(rect)
             rectangles.append(rect)
@@ -69,7 +87,6 @@ class Vision:
         # in the result. I've set eps to 0.5, which is:
         # "Relative difference between sides of the rectangles to merge them into a group."
         rectangles, weights = cv.groupRectangles(rectangles, groupThreshold=1, eps=0.5)
-        #print(rectangles)
 
         points = []
         coordinates = []
@@ -91,25 +108,25 @@ class Vision:
                 points.append((center_x, center_y))
                 coordinates.append((x, y, w, h))
 
-                if debug_mode:
+                if debug:
                     # Determine the box position
                     top_left = (x, y)
                     bottom_right = (x + w, y + h)
                     # Draw the box
                     cv.rectangle(image, top_left, bottom_right, color=line_color, 
                                 lineType=line_type, thickness=2)
-            if debug_mode:
+            if debug:
                 print("Found something")
                 cv.imshow('Matches', image)
-                # cv.waitKey(500)
-                # cv.destroyAllWindows()
+                cv.waitKey(2000)
+                cv.destroyAllWindows()
                 # cv.waitKey(0)
                 # cv.destroyAllWindows()
 
-        # if debug_mode:
-        #     cv.imshow('Matches', image)
-        #     cv.waitKey(2000)
-        #     cv.destroyAllWindows()
+        if debug:
+            cv.imshow('Matches', image)
+            cv.waitKey(500)
+            cv.destroyAllWindows()
 
         return coordinates
     

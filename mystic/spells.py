@@ -1,7 +1,7 @@
 import os
 import time
 from common.windowcapture import wincap
-from common.spell import Spell, NoCooldownSpell
+from common.spell import Spell, NoCooldownSpell, SkillLogSpell
 from common.combo import Combo
 from common.bind import Bind, hold_bind, hold_bind_release_early
 from common.vision import Vision
@@ -56,6 +56,7 @@ def get_attack_speed():
 #wave_orb -> earthsplitter 0.36, 0.32
 #wave_orb -> crouching 0.43, 0.4
 rapid_stream = Spell(Vision('rapid_stream'), Bind('shift', 'left'), 0.6, 5, get_attack_speed)
+rapid_stream_log = SkillLogSpell(Vision('rapid_stream', threshold=0.91), Bind('shift', 'left'), 0.6, 5, get_attack_speed)
 tidal_burst_quick = TidalBurst(Vision('tidal_burst'), Bind('shift', 'right', hold_bind_release_early), 1.1, 3, get_attack_speed)
 tidal_burst = TidalBurst(Vision('tidal_burst'), Bind('shift', 'right', hold_bind_release_early), 1.5, 3, get_attack_speed)
 

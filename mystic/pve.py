@@ -4,6 +4,9 @@ def pve(context, last_cast):
     spirits = shard_count.count_shards()
     print(spirits)
 
+    if rapid_stream_log.ready():
+        if rapid_stream_log.cast(context, debug=True):
+            return time.time()
     # if dragonize.ready() and not ap_buff_active() and time.time() - last_cast >= 1.5:
     #     if dragonize.cast(context):
     #         return time.time()

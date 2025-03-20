@@ -1,6 +1,4 @@
 import pygetwindow
-from .windowcapture import wincap
-from .spell import Spell
 
 def bdo_selected(func):
     def wrapper(*args, **kwargs):
@@ -10,17 +8,11 @@ def bdo_selected(func):
             current_title = current_window.title.lower()
             if current_title and "black desert" in current_title:
                 return func(*args, **kwargs)
+        
+        print("Black Desert is not the active window")
+        return False
     
     return wrapper
-
-@bdo_selected
-def init_spells(spell_instances):
-    screenshot = wincap.get_skills()
-    for spell in spell_instances:
-        spell.ready(screenshot)
-    
-    print("Spells Initiated")
-    return True
 
 class Variables:
     def __init__(self, *args):
