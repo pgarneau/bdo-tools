@@ -73,10 +73,16 @@ def shai_buff_active():
         return True
     return False
 
+def bsr_100():
+    bsr_img = wincap.get_bsr()
+    if bsr_buff.ready(bsr_img):
+        return True
+    return False
+
 def pve(context):
     if e_buff.ready():
         e_buff.cast(context)
-    elif bsr_buff.ready() and ebuff_inactive():
+    elif bsr_100() and ebuff_inactive():
         bsr_buff.cast(context)
     elif glorious_advance_1h.ready() and god_incinerator_accel.ready():
         glorgodcombo.cast(context)
