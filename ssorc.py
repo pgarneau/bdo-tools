@@ -33,6 +33,7 @@ def iframe_forward_mmb(context):
 
 def iframe_forward_button4(context):
     iframe_forward_180_button4.cast(context)
+    var.state = [False, False, False, False, False, False]
 
 listener = Listener(debug=False)
 listener.register_keybind('f24', main)
