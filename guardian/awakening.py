@@ -12,6 +12,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 crit_buff = Spell(Vision('crit', 0.98), None)
 ap_buff = Spell(Vision('ap', 0.98), None)
 shai_buff = Spell(Vision('shai_speed', 0.98), None)
+e_buff_buff = Spell(Vision('e_buff_buff', 0.98), None)
 
 def get_attack_speed():
     speed = 1
@@ -28,11 +29,17 @@ def get_attack_speed():
     
     return speed
 
+def ebuff_inactive():
+    buffs = wincap.get_buffs()
+    if e_buff_buff.ready(buffs):
+        return False
+    return True
+
 # Pre-awak
 
 # Awakening
 glorious_advance_1h = Spell(Vision('glorious_advance'), Bind('s', 'left'), 0.75, 5, get_attack_speed)
-cleansing_flame = Spell(Vision('cleansing_flame'), Bind('shift+f', None), 1.0, 6, get_attack_speed)
+cleansing_flame = Spell(Vision('cleansing_flame'), Bind('shift+f', None), 0.9, 6, get_attack_speed)
 flow_to_ashes = Spell(Vision('flow_to_ashes'), Bind(None, 'left'), 0.6, 7, get_attack_speed)
 scalding_thorn = Spell(Vision('scalding_thorn'), Bind('f', None), 0.45, 5, get_attack_speed)
 dragons_maw = Spell(Vision('dragons_maw'), Bind('shift', 'left'), 0.2, 10, get_attack_speed)
@@ -44,6 +51,7 @@ god_incinerator_accel = Spell(Vision('god_incinerator'), Bind('shift+q', None), 
 god_incinerator = Spell(Vision('god_incinerator'), Bind('shift+q', None), 1.8, 8, get_attack_speed)
 fireborne_rupture = Spell(Vision('fireborne_rupture'), Bind('q', None), 0.5, 4, get_attack_speed)
 e_buff = Spell(Vision('e_buff'), Bind('shift+e', None), 0.5, 4, get_attack_speed)
+bsr_buff = Spell(Vision('100BSR', threshold=0.99), Bind('z', None), 1.0, 60, get_attack_speed)
 
 # Combos
 cleansing_flame_combo = Combo([cleansing_flame, flow_to_ashes, scalding_thorn])
@@ -68,6 +76,8 @@ def shai_buff_active():
 def pve(context):
     if e_buff.ready():
         e_buff.cast(context)
+    elif bsr_buff.ready() and ebuff_inactive():
+        bsr_buff.cast(context)
     elif glorious_advance_1h.ready() and god_incinerator_accel.ready():
         glorgodcombo.cast(context)
     elif god_incinerator_combo.ready():
