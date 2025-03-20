@@ -29,7 +29,7 @@ def get_attack_speed():
         speed = speed + 0.2
     
     # Generic modifier to press keybinds faster than actual animations
-    speed = speed + 0.2
+    speed = speed + 0.15
     
     return speed
 
@@ -162,11 +162,12 @@ def z_buff_active():
 # State[4] = Post TBS State
 # State[5] = Post Darkness Released
 # State[6] = Shadow Eruption Cancel Useable
-def pve(context, state):
-    if (not state[2] and not state[3] and not state[4] and not state[6]) and (z_buff.ready() or prime_abyssal_vanguard.ready()):
-        if not e_buff_active() and z_buff.ready():
+def pve(context, state, last_cast):
+    # Before combat
+    if time.time() - last_cast >= 1.5:
+        if z_buff.ready() and not e_buff_active():
             z_buff.cast(context)
-        elif not z_buff_active() and prime_abyssal_vanguard.ready():
+        elif prime_abyssal_vanguard.ready() and not z_buff_active():
             prime_abyssal_vanguard.cast(context)
 
     elif state[0]:

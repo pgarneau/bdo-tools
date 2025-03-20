@@ -17,7 +17,11 @@ if not initialize_configuration(wait_for_bdo=True, max_wait_seconds=120):
     print("Configuration initialization failed. Some features may not work correctly.")
 
 def main(context):
-    var.state = pve(context, var.state)
+    if time.time() - var.last_cast > 0.6:
+        var.state = [False, False, False, False, False, False, False]
+
+    var.state = pve(context, var.state, var.last_cast)
+    var.last_cast = time.time()
 
 def reposition_right(context):
     iframe_right.cast(context)
