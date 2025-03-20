@@ -25,4 +25,4 @@ def camera_180():
 
 def camera_180_1080p_1200dpi():
     global width, height
-    return custom_mouse_handler(width*1.45, 0, 0.05, False, False, 'release')
+    return custom_mouse_handler(width*0.83, 0, 0.05, False, False, 'release')
