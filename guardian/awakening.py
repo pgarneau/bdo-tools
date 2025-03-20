@@ -1,7 +1,7 @@
 import os
 import time
 from common.windowcapture import wincap
-from common.spell import Spell, NoCooldownSpell, link_spells, Iframe
+from common.spell import Spell, NoCooldownSpell, link_spells, Iframe, BsrConsume
 from common.combo import Combo
 from common.bind import Bind, hold_bind, hold_bind_release_early
 from common.vision import Vision
@@ -51,7 +51,7 @@ god_incinerator_accel = Spell(Vision('god_incinerator'), Bind('shift+q', None), 
 god_incinerator = Spell(Vision('god_incinerator'), Bind('shift+q', None), 1.8, 8, get_attack_speed)
 fireborne_rupture = Spell(Vision('fireborne_rupture'), Bind('q', None), 0.5, 4, get_attack_speed)
 e_buff = Spell(Vision('e_buff'), Bind('shift+e', None), 0.5, 4, get_attack_speed)
-bsr_buff = Spell(Vision('100BSR', threshold=0.99), Bind('z', None), 1.0, 60, get_attack_speed)
+bsr_buff = BsrConsume(Vision('100BSR', threshold=0.99), Bind('z', None), 1.0, 60, get_attack_speed)
 
 # Combos
 cleansing_flame_combo = Combo([cleansing_flame, flow_to_ashes, scalding_thorn])
@@ -73,16 +73,10 @@ def shai_buff_active():
         return True
     return False
 
-def bsr_100():
-    bsr_img = wincap.get_bsr()
-    if bsr_buff.ready(bsr_img):
-        return True
-    return False
-
 def pve(context):
     if e_buff.ready():
         e_buff.cast(context)
-    elif bsr_100() and ebuff_inactive():
+    elif bsr_buff.ready() and ebuff_inactive():
         bsr_buff.cast(context)
     elif glorious_advance_1h.ready() and god_incinerator_accel.ready():
         glorgodcombo.cast(context)
