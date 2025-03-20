@@ -247,7 +247,7 @@ class Iframe(DefenseSpell):
         super().__init__(Vision('iframe2', threshold=0.98, base_path=os.path.join(current_dir, 'spells')), bind, duration, speed_function)
 
 class SkillLogSpell(Spell):
-    def ready(self, debug=True):
+    def ready(self, debug=False):
         return True
     def ready_in(self, seconds):
         return True

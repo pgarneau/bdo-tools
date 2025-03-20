@@ -38,6 +38,7 @@ class WindowCapture:
         self.regions = {}
         self.buff_location = None
         self.skill_log_location = None
+        self.target_debuffs_location = None  # Add this line
 
         # find the handle for the window we want to capture
         if window_name is None:
@@ -200,14 +201,6 @@ class WindowCapture:
 
         return cv.GaussianBlur(gray, (5, 5), 0)
     
-    def get_debuffs(self):
-        x = 1085
-        y = 50
-        w = 400
-        h = 50
-
-        return self.get_screenshot(x, y, w, h, scale=True)
-    
     def get_defense_icon(self):
         x = 1343
         y = 550
@@ -279,6 +272,24 @@ class WindowCapture:
             return self.regions[region_name]
         else:
             raise ValueError(f"Region '{region_name}' is not configured")
+
+    def get_debuffs(self):
+        """Get screenshot of target debuffs region"""
+        try:
+            # Try to use configured region
+            if hasattr(self, 'regions') and self.regions and "target_debuffs" in self.regions:
+                x, y, w, h = self.regions["target_debuffs"]
+                return self.get_screenshot(x, y, w, h)
+        except (AttributeError, KeyError, ValueError):
+            pass
+            
+        # Fall back to default location if not configured
+        if hasattr(self, 'target_debuffs_location') and self.target_debuffs_location:
+            x, y = self.target_debuffs_location
+            return self.get_screenshot(x, y, 400, 50)  # Default size
+            
+        # Hard-coded fallback
+        return self.get_screenshot(1085, 50, 400, 50, scale=True)
 
 # Create singleton instance
 wincap = WindowCapture()

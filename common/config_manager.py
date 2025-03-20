@@ -37,6 +37,7 @@ class ConfigManager:
             "ui_regions": {
                 "skill_log": None,
                 "buffs": None,
+                "target_debuffs": None,  # Added target_debuffs region
             },
         }
         self.save_config(default_config)
@@ -250,6 +251,7 @@ class ConfigManager:
         default_dimensions = {
             "skill_log": (200, 150),
             "buffs": (300, 50),
+            "target_debuffs": (400, 50),  # Added default dimensions for target_debuffs
         }
         
         # Configure each required region
@@ -292,7 +294,8 @@ class ConfigManager:
         # Updated colors for different regions (BGR format)
         colors = {
             "skill_log": (0, 255, 0),      # Green 
-            "buffs": (0, 0, 255),          # Pure Red (was Blue in your code)
+            "buffs": (0, 0, 255),          # Red
+            "target_debuffs": (255, 0, 255),  # Magenta
         }
         
         # Default to all regions if none specified
@@ -308,12 +311,12 @@ class ConfigManager:
                 color = colors.get(region_name, (255, 255, 255))
                 
                 # Make the rectangle thicker for better visibility
-                cv.rectangle(display_img, (x, y), (x+w, y+h), color, 3)  # Increased thickness from 2 to 3
+                cv.rectangle(display_img, (x, y), (x+w, y+h), color, 3)
                 
                 # Add a black outline to text for better visibility against any background
                 text_pos = (x, y-10)
                 cv.putText(display_img, region_name, (text_pos[0]+1, text_pos[1]+1), 
-                          cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 3)  # Black shadow
+                          cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 3)
                 cv.putText(display_img, region_name, text_pos, 
                           cv.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
                 
@@ -353,6 +356,8 @@ class ConfigManager:
                     window_capture.skill_log_location = (coords[0], coords[1])
                 elif region_name == "buffs":
                     window_capture.buff_location = (coords[0], coords[1])
+                elif region_name == "target_debuffs":
+                    window_capture.target_debuffs_location = (coords[0], coords[1])
         
         # Store the regions in the window_capture instance
         window_capture.regions = initialized_regions
@@ -373,7 +378,7 @@ class ConfigManager:
         from .windowcapture import wincap
         
         # Check if config file exists and has regions configured
-        required_regions = ["skill_log", "buffs"]
+        required_regions = ["skill_log", "buffs", "target_debuffs"]  # Added target_debuffs
         missing_regions = []
         
         # Check which regions are missing
@@ -395,6 +400,8 @@ class ConfigManager:
                     dimensions = (200, 150)
                 elif region == "buffs":
                     dimensions = (700, 60)
+                elif region == "target_debuffs":  # Added dimensions for target_debuffs
+                    dimensions = (400, 50)
                 else:
                     dimensions = (200, 200)
                 
@@ -411,6 +418,8 @@ class ConfigManager:
                         self.set(f"ui_regions.{region}", (1200, 700, 200, 150))
                     elif region == "buffs":
                         self.set(f"ui_regions.{region}", (1085, 50, 700, 60))
+                    elif region == "target_debuffs":  # Added default position
+                        self.set(f"ui_regions.{region}", (1085, 110, 400, 50))
         
         # Initialize WindowCapture with the configuration
         regions = self.initialize_window_regions(wincap)
@@ -490,7 +499,7 @@ def initialize_configuration(wait_for_bdo=True, max_wait_seconds=60):
         True if configuration successful, False otherwise
     """
     # Check if config exists and has required regions
-    required_regions = ["skill_log", "buffs"]
+    required_regions = ["skill_log", "buffs", "target_debuffs"]  # Added target_debuffs
     all_configured = all(config_manager.get(f"ui_regions.{region}") for region in required_regions)
     
     # If already configured, initialize silently
