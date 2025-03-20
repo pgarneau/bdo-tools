@@ -69,7 +69,8 @@ prime_black_wave = HoldAndSpamSpell(Vision('prime_black_wave'), Bind('s', None, 
 iframe_right = Iframe(Bind('shift+d', None), 0.6, get_attack_speed)
 iframe_left = Iframe(Bind('shift+a', None), 0.6, get_attack_speed)
 iframe_forward_180_mmb = SkillLogSpell(Vision('night_crow'), Bind(None, 'middle', camera_180()), 0.2, get_attack_speed)
-iframe_forward_180_button4 = SkillLogSpell(Vision('night_crow'), Bind(None, 'x1', camera_180_1080p_1200dpi()), 0.2, get_attack_speed)
+iframe_forward_180_button4 = SkillLogSpell(Vision('night_crow', threshold=0.93), Bind(None, 'x1', camera_180_1080p_1200dpi()), 0.2, get_attack_speed)
+
 
 
 link_spells(prime_violation, prime_violation_claw)
