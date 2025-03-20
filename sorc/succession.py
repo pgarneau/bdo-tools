@@ -161,15 +161,15 @@ def pve(context, state):
         elif prime_turn_back_slash.ready() and engulfing_shadow.ready():
             if engulfing_shadow.cast(context):
                 return [False, True, False, True, False, False]
-        elif state[1] and shadow_hellfire.ready():
-            if shadow_hellfire.cast(context):
-                return [False, False, False, False, False, False]
         elif shadow_ignition.ready():
             if shadow_ignition.cast(context):
                 return [False, False, False, True, False, False]
         elif engulfing_shadow.ready():
             if engulfing_shadow.cast(context):
                 return [False, True, False, True, False, False]
+        elif state[1] and shadow_hellfire.ready():
+            if shadow_hellfire.cast(context):
+                return [False, False, False, False, False, False]
         elif not state[5] and prime_violation.ready():
             if prime_violation.cast(context):
                 return [False, False, True, False, False, False]
@@ -217,12 +217,12 @@ def pve(context, state):
             return [False, False, False, False, True, False]
     elif state[4] and prime_ultimate_eruption.ready():
         prime_ultimate_eruption.cast(context)
+    elif state[4] and prime_abyssal_flame.ready():
+        prime_abyssal_flame.cast(context)
     elif state[4] and prime_shadow_eruption.ready():
         prime_shadow_eruption.cast(context)
     elif state[4] and claw_eruption.ready():
         claw_eruption.cast(context)
-    elif state[4] and prime_abyssal_flame.ready():
-        prime_abyssal_flame.cast(context)
     elif midnight_tbs.ready():
         if midnight_tbs.cast(context):
             return [False, False, False, False, True, False]
@@ -236,17 +236,17 @@ def pve(context, state):
         if crow_tbs.cast(context):
             return [False, False, False, False, True, False]
     
+    # Darkness Released Combos
+    elif prime_darkness_released.ready():
+        if prime_darkness_released.cast(context):
+            return [True, False, False, False, False, True]
+    
     # Shadow Eruption Combos
     elif midnight_double_eruption.ready():
         midnight_double_eruption.cast(context)
     elif midnight_eruption.ready():
         midnight_eruption.cast(context)
 
-    # Darkness Released Combos
-    elif prime_darkness_released.ready():
-        if prime_darkness_released.cast(context):
-            return [True, False, False, False, False, True]
-    
     # Ultimate Shadow Eruption
     elif midnight_claw_eruption_combo.ready():
         midnight_claw_eruption_combo.cast(context)
@@ -265,16 +265,16 @@ def pve(context, state):
     elif prime_claws_of_darkness.ready():
         if prime_claws_of_darkness_cancel.cast(context):
             return [True, False, False, False, False, False]
-    elif state[1] and shadow_hellfire.ready():
-        shadow_hellfire.cast(context)
     elif shadow_ignition.ready():
         if shadow_ignition.cast(context):
             return [False, False, False, True, False, False]
-    elif dark_tendrils.ready():
-        dark_tendrils.cast(context)
     elif engulfing_shadow.ready():
         if engulfing_shadow.cast(context):
             return [False, True, False, True, False, False]
+    elif state[1] and shadow_hellfire.ready():
+        shadow_hellfire.cast(context)
+    elif dark_tendrils.ready():
+        dark_tendrils.cast(context)
     elif prime_crow_flare.ready():
         if prime_crow_flare.cast(context):
             return [False, False, True, True, False, False]
