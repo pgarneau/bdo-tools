@@ -181,12 +181,12 @@ def pve(context, state, last_cast):
         elif prime_midnight_stinger.ready():
             if prime_midnight_stinger.cast(context):
                 return [False, True, True, True, False, False, True]
-        elif prime_bloody_calamity.ready() and not state[5] and prime_violation.ready():
-            if prime_violation.cast(context):
-                return [False, False, True, False, False, False, False]
         elif prime_bloody_calamity.ready() and prime_crow_flare.ready():
             if prime_crow_flare.cast(context):
                 return [False, False, True, True, False, False, False]
+        elif prime_bloody_calamity.ready() and not state[5] and prime_violation.ready():
+            if prime_violation.cast(context):
+                return [False, False, True, False, False, False, False]
         elif prime_turn_back_slash.ready() and shadow_ignition.ready():
             if shadow_ignition.cast(context):
                 return [False, False, False, True, False, False, False]
@@ -202,9 +202,9 @@ def pve(context, state, last_cast):
         elif state[1] and shadow_hellfire.ready():
             if shadow_hellfire.cast(context):
                 return [False, False, False, False, False, False, False]
-        elif not state[5] and prime_violation.ready():
-            if prime_violation.cast(context):
-                return [False, False, True, False, False, False, False]
+        # elif not state[5] and prime_violation.ready():
+        #     if prime_violation.cast(context):
+        #         return [False, False, True, False, False, False, False]
         elif prime_crow_flare.ready():
             if prime_crow_flare.cast(context):
                 return [False, False, True, True, False, False, False]
@@ -239,9 +239,9 @@ def pve(context, state, last_cast):
     elif eruption_calamity.ready():
         if eruption_calamity.cast(context):
             return [True, False, False, False, False, False, True]
-    elif violation_calamity.ready():
-        if violation_calamity.cast(context):
-            return [True, False, False, False, False, False, True]
+    # elif violation_calamity.ready():
+    #     if violation_calamity.cast(context):
+    #         return [True, False, False, False, False, False, True]
     elif crow_calamity.ready():
         if crow_calamity.cast(context):
             return [True, False, False, False, False, False, True]    
