@@ -16,19 +16,20 @@ crit_buff = Spell(Vision('crit', 0.98), None)
 ap_buff = Spell(Vision('ap', 0.98), None)
 shai_buff = Spell(Vision('shai_speed', 0.98), None)
 dp_debuff = Spell(Vision('magic_dp_debuff', 0.98), None)
+e_buff = Spell(Vision('suc_e_buff', 0.98), None)
 
 def get_attack_speed():
     speed = 1
     buffs = wincap.get_buffs()
     if ap_buff.ready(buffs):
-        speed = speed + 0.25
+        speed = speed + 0.1
     # elif cast_speed_buff.ready(buffs):
     #     speed = speed + 0.1
     if shai_buff.ready(buffs):
-        speed = speed + 0.1
+        speed = speed + 0.2
     
     # Generic modifier to press keybinds faster than actual animations
-    speed = speed + 0.1
+    speed = speed + 0.15
     
     return speed
 
@@ -65,12 +66,13 @@ prime_violation_claw = Spell(Vision('prime_violation'), Bind('c', None), 0.7, 6,
 shadow_hellfire = Spell(Vision('shadow_hellfire'), Bind(None, 'right', hold_bind_release_early), 0.6, 4, get_attack_speed)
 dark_tendrils = Spell(Vision('dark_tendrils'), Bind('s+e', None), 1.45, 8, get_attack_speed)
 prime_black_wave = HoldAndSpamSpell(Vision('prime_black_wave'), Bind('s', None, hold_bind), Bind(None, 'right+left'), 1.7, 8, get_attack_speed)
+prime_abyssal_vanguard = Spell(Vision('prime_abyssal_vanguard'), Bind('3', None, hotbar=True), 1, 180, get_attack_speed)
 
 iframe_right = Iframe(Bind('shift+d', None), 0.6, get_attack_speed)
 iframe_left = Iframe(Bind('shift+a', None), 0.6, get_attack_speed)
 iframe_forward_180_mmb = SkillLogSpell(Vision('night_crow'), Bind(None, 'middle', camera_180()), 0.2, get_attack_speed)
 iframe_forward_180_button4 = SkillLogSpell(Vision('night_crow', threshold=0.93), Bind(None, 'x1', camera_180_1080p_1200dpi()), 0.2, get_attack_speed)
-
+z_buff = BsrConsume(Vision('bsr_100', threshold=0.99), Bind('z', None), 1.0, 1, get_attack_speed)
 
 
 link_spells(prime_violation, prime_violation_claw)
@@ -111,10 +113,15 @@ midnight_eruption = Combo([prime_midnight_stinger, prime_shadow_eruption])
 
 def crit_buff_active():
     buffs = wincap.get_buffs()
-    x, y = crit_buff.ready(buffs, count=True)
-    if x and y >= 2:
-        return True
-    return False
+    if e_buff.ready(buffs):
+        if crit_buff.ready(buffs):
+            return True
+        return False
+    else:
+        x, y = crit_buff.ready(buffs, count=True)
+        if x and y >= 2:
+            return True
+        return False
 
 def cast_speed_active():
     buffs = wincap.get_buffs()
@@ -135,6 +142,18 @@ def target_dp_debuffed():
         return True
     return False
 
+def e_buff_active():
+    buffs = wincap.get_buffs()
+    if e_buff.ready(buffs):
+        return True
+    return False
+
+def z_buff_active():
+    buffs = wincap.get_buffs()
+    if ap_buff.ready(buffs):
+        return True
+    return False
+
 # State = [0, 0, 0, 0, 0, 0]
 # State[0] = Cancellable State
 # State[1] = Hellfire Useable
@@ -142,105 +161,119 @@ def target_dp_debuffed():
 # State[3] = TBS Useable
 # State[4] = Post TBS State
 # State[5] = Post Darkness Released
-def pve(context, state):
-    if state[0]:
+# State[6] = Shadow Eruption Cancel Useable
+def pve(context, state, last_cast):
+    # Before combat
+    if time.time() - last_cast >= 1.5 and z_buff.ready() and not e_buff_active():
+        z_buff.cast(context)
+    elif time.time() - last_cast >= 1.5 and prime_abyssal_vanguard.ready() and not z_buff_active():
+        prime_abyssal_vanguard.cast(context)
+
+    elif state[0]:
         if not state[5] and not target_dp_debuffed() and prime_violation.ready():
             if prime_violation.cast(context):
-                return [False, False, True, False, False, False]
+                return [False, False, True, False, False, False, False]
+        elif state[6] and prime_ultimate_eruption.ready():
+            prime_ultimate_eruption.cast(context)
+        elif state[6] and prime_shadow_eruption.ready():
+            prime_shadow_eruption.cast(context)
         elif prime_midnight_stinger.ready():
             if prime_midnight_stinger.cast(context):
-                return [False, True, True, True, False, False]
-        elif prime_bloody_calamity.ready() and not state[5] and prime_violation.ready():
-            if prime_violation.cast(context):
-                return [False, False, True, False, False, False]
+                return [False, True, True, True, False, False, True]
         elif prime_bloody_calamity.ready() and prime_crow_flare.ready():
             if prime_crow_flare.cast(context):
-                return [False, False, True, True, False, False]
+                return [False, False, True, True, False, False, False]
+        elif prime_bloody_calamity.ready() and not state[5] and prime_violation.ready():
+            if prime_violation.cast(context):
+                return [False, False, True, False, False, False, False]
         elif prime_turn_back_slash.ready() and shadow_ignition.ready():
             if shadow_ignition.cast(context):
-                return [False, False, False, True, False, False]
+                return [False, False, False, True, False, False, False]
         elif prime_turn_back_slash.ready() and engulfing_shadow.ready():
             if engulfing_shadow.cast(context):
-                return [False, True, False, True, False, False]
+                return [False, True, False, True, False, False, False]
         elif shadow_ignition.ready():
             if shadow_ignition.cast(context):
-                return [False, False, False, True, False, False]
+                return [False, False, False, True, False, False, False]
         elif engulfing_shadow.ready():
             if engulfing_shadow.cast(context):
-                return [False, True, False, True, False, False]
+                return [False, True, False, True, False, False, False]
         elif state[1] and shadow_hellfire.ready():
             if shadow_hellfire.cast(context):
-                return [False, False, False, False, False, False]
-        elif not state[5] and prime_violation.ready():
-            if prime_violation.cast(context):
-                return [False, False, True, False, False, False]
+                return [False, False, False, False, False, False, False]
+        # elif not state[5] and prime_violation.ready():
+        #     if prime_violation.cast(context):
+        #         return [False, False, True, False, False, False, False]
         elif prime_crow_flare.ready():
             if prime_crow_flare.cast(context):
-                return [False, False, True, True, False, False]
+                return [False, False, True, True, False, False, False]
 
     # BUFFS AND DEBUFFS
+    elif not cast_speed_active() and not target_dp_debuffed() and claws_vio_combo.ready():
+        if claws_vio_combo.cast(context):
+            return [False, False, True, False, False, False, False]
     elif not cast_speed_active() and prime_claws_of_darkness_cancel.ready():
         if prime_claws_of_darkness_cancel.cast(context):
-            return [True, False, False, False, False, False]
-    elif not target_dp_debuffed() and claws_vio_combo.ready():
-        if claws_vio_combo.cast(context):
-            return [False, False, True, False, False, False]
+            return [False, False, False, False, False, False, False]
+    elif not target_dp_debuffed() and prime_violation.ready():
+        if prime_violation.cast(context):
+            return [False, False, True, False, False, False, False]
     elif not crit_buff_active() and prime_midnight_stinger.ready():
         if prime_midnight_stinger.cast(context):
-            return [False, True, True, True, False, False]
+            return [False, True, True, True, False, False, True]
     
     # DPS
     # DoD cheat for cooldown
     elif prime_imminent_doom.ready() and time.time() - prime_dream_of_doom.shared_data.last_cast >= 14:
         if prime_imminent_doom.cast(context):
-            return [True, True, False, False, False, False]
+            return [True, True, False, False, False, False, False]
     
     # Calamity Combos
     elif state[2] and prime_bloody_calamity.ready():
         if calamity_combo.cast(context):
-            return [True, False, False, False, False, False]
+            return [True, False, False, False, False, False, True]
     elif midnight_calamity_combo.ready():
         if midnight_calamity_combo.cast(context):
-            return [True, False, False, False, False, False]
+            return [True, False, False, False, False, False, True]
     elif eruption_calamity.ready():
         if eruption_calamity.cast(context):
-            return [True, False, False, False, False, False]
-    elif violation_calamity.ready():
-        if violation_calamity.cast(context):
-            return [True, False, False, False, False, False]
+            return [True, False, False, False, False, False, True]
+    # elif violation_calamity.ready():
+    #     if violation_calamity.cast(context):
+    #         return [True, False, False, False, False, False, True]
     elif crow_calamity.ready():
         if crow_calamity.cast(context):
-            return [True, False, False, False, False, False]    
+            return [True, False, False, False, False, False, True]    
     
     # TBS Combos
     elif state[3] and prime_turn_back_slash.ready():
         if prime_turn_back_slash.cast(context):
-            return [False, False, False, False, True, False]
-    elif state[4] and prime_ultimate_eruption.ready():
-        prime_ultimate_eruption.cast(context)
+            return [False, False, False, False, True, False, True]
     elif state[4] and prime_abyssal_flame.ready():
         prime_abyssal_flame.cast(context)
+    elif state[4] and prime_ultimate_eruption.ready():
+        prime_ultimate_eruption.cast(context)
     elif state[4] and prime_shadow_eruption.ready():
         prime_shadow_eruption.cast(context)
     elif state[4] and claw_eruption.ready():
         claw_eruption.cast(context)
     elif midnight_tbs.ready():
         if midnight_tbs.cast(context):
-            return [False, False, False, False, True, False]
+            return [False, False, False, False, True, False, True]
     elif ignition_tbs.ready():
         if ignition_tbs.cast(context):
-            return [False, False, False, False, True, False]
+            return [False, False, False, False, True, False, True]
     elif engulfing_tbs.ready():
         if engulfing_tbs.cast(context):
-            return [False, False, False, False, True, False]
+            return [False, False, False, False, True, False, True]
     elif crow_tbs.ready():
         if crow_tbs.cast(context):
-            return [False, False, False, False, True, False]
+            return [False, False, False, False, True, False, True]
     
     # Darkness Released Combos
     elif prime_darkness_released.ready():
         if prime_darkness_released.cast(context):
-            return [True, False, False, False, False, True]
+            return [True, False, False, False, False, True, False]
     
     # Shadow Eruption Combos
     elif midnight_double_eruption.ready():
@@ -259,25 +292,25 @@ def pve(context, state):
     # Generic
     elif prime_midnight_stinger.ready():
         if prime_midnight_stinger.cast(context):
-            return [False, True, True, True, False, False]
+            return [False, True, True, True, False, False, True]
     elif prime_black_wave.ready():
         if prime_black_wave.cast(context):
-            return [True, False, False, False, False, False]
+            return [True, False, False, False, False, False, False]
     elif prime_claws_of_darkness.ready():
         if prime_claws_of_darkness_cancel.cast(context):
-            return [True, False, False, False, False, False]
+            return [True, False, False, False, False, False, False]
     elif shadow_ignition.ready():
         if shadow_ignition.cast(context):
-            return [False, False, False, True, False, False]
+            return [False, False, False, True, False, False, False]
     elif engulfing_shadow.ready():
         if engulfing_shadow.cast(context):
-            return [False, True, False, True, False, False]
+            return [False, True, False, True, False, False, False]
     elif state[1] and shadow_hellfire.ready():
         shadow_hellfire.cast(context)
     elif dark_tendrils.ready():
         dark_tendrils.cast(context)
     elif prime_crow_flare.ready():
         if prime_crow_flare.cast(context):
-            return [False, False, True, True, False, False]
+            return [False, False, True, True, False, False, False]
     
-    return [False, False, False, False, False, False]
+    return [False, False, False, False, False, False, False]

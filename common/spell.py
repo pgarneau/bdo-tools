@@ -111,6 +111,11 @@ class Spell:
                 self.bind.hold_and_release(context, self.duration, self.speed_function())
                 return True
 
+class BsrConsume(Spell):
+    def ready(self, screenshot=None, count=False, debug=False):
+        bsr_ss = wincap.get_bsr()
+        return super().ready(bsr_ss, count, debug)
+
 class NoCooldownSpell:
     # constructor
     def __init__(self, name, bind, duration, speed_function=default_speed_function):

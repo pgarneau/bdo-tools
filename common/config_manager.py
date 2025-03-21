@@ -37,7 +37,8 @@ class ConfigManager:
             "ui_regions": {
                 "skill_log": None,
                 "buffs": None,
-                "target_debuffs": None,  # Added target_debuffs region
+                "target_debuffs": None,
+                "bsr_location": None,  # Added BSR location region
             },
         }
         self.save_config(default_config)
@@ -249,9 +250,10 @@ class ConfigManager:
         
         # Default dimensions for different regions
         default_dimensions = {
-            "skill_log": (200, 150),
+            "skill_log": (80, 80),
             "buffs": (300, 50),
             "target_debuffs": (400, 50),  # Added default dimensions for target_debuffs
+            "bsr_location": (80, 80),  # Added default dimensions for BSR
         }
         
         # Configure each required region
@@ -293,9 +295,10 @@ class ConfigManager:
         
         # Updated colors for different regions (BGR format)
         colors = {
-            "skill_log": (0, 255, 0),      # Green 
-            "buffs": (0, 0, 255),          # Red
-            "target_debuffs": (255, 0, 255),  # Magenta
+            "skill_log": (0, 255, 0),       # Green 
+            "buffs": (0, 0, 255),           # Red
+            "target_debuffs": (255, 0, 255), # Magenta
+            "bsr_location": (255, 165, 0),   # Blue-Orange (BGR)
         }
         
         # Default to all regions if none specified
@@ -358,6 +361,8 @@ class ConfigManager:
                     window_capture.buff_location = (coords[0], coords[1])
                 elif region_name == "target_debuffs":
                     window_capture.target_debuffs_location = (coords[0], coords[1])
+                elif region_name == "bsr_location":
+                    window_capture.bsr_location = (coords[0], coords[1])  # Add BSR location
         
         # Store the regions in the window_capture instance
         window_capture.regions = initialized_regions
@@ -378,7 +383,7 @@ class ConfigManager:
         from .windowcapture import wincap
         
         # Check if config file exists and has regions configured
-        required_regions = ["skill_log", "buffs", "target_debuffs"]  # Added target_debuffs
+        required_regions = ["skill_log", "buffs", "target_debuffs", "bsr_location"]
         missing_regions = []
         
         # Check which regions are missing
@@ -397,11 +402,13 @@ class ConfigManager:
                 
                 # Default dimensions by region type
                 if region == "skill_log":
-                    dimensions = (200, 150)
+                    dimensions = (80, 80)
                 elif region == "buffs":
                     dimensions = (700, 60)
-                elif region == "target_debuffs":  # Added dimensions for target_debuffs
+                elif region == "target_debuffs":
                     dimensions = (400, 50)
+                elif region == "bsr_location":
+                    dimensions = (80, 80)  # Default size for BSR meter
                 else:
                     dimensions = (200, 200)
                 
@@ -418,9 +425,11 @@ class ConfigManager:
                         self.set(f"ui_regions.{region}", (1200, 700, 200, 150))
                     elif region == "buffs":
                         self.set(f"ui_regions.{region}", (1085, 50, 700, 60))
-                    elif region == "target_debuffs":  # Added default position
+                    elif region == "target_debuffs":
                         self.set(f"ui_regions.{region}", (1085, 110, 400, 50))
-        
+                    elif region == "bsr_location":
+                        self.set(f"ui_regions.{region}", (1280, 700, 80, 80))  # Default position for BSR
+    
         # Initialize WindowCapture with the configuration
         regions = self.initialize_window_regions(wincap)
         
@@ -499,7 +508,7 @@ def initialize_configuration(wait_for_bdo=True, max_wait_seconds=60):
         True if configuration successful, False otherwise
     """
     # Check if config exists and has required regions
-    required_regions = ["skill_log", "buffs", "target_debuffs"]  # Added target_debuffs
+    required_regions = ["skill_log", "buffs", "target_debuffs", "bsr_location"]  # Added bsr_location
     all_configured = all(config_manager.get(f"ui_regions.{region}") for region in required_regions)
     
     # If already configured, initialize silently

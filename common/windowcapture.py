@@ -38,7 +38,8 @@ class WindowCapture:
         self.regions = {}
         self.buff_location = None
         self.skill_log_location = None
-        self.target_debuffs_location = None  # Add this line
+        self.target_debuffs_location = None
+        self.bsr_location = None  # Add this line for BSR location
 
         # find the handle for the window we want to capture
         if window_name is None:
@@ -290,6 +291,25 @@ class WindowCapture:
             
         # Hard-coded fallback
         return self.get_screenshot(1085, 50, 400, 50, scale=True)
+
+    def get_bsr(self):
+        """Get screenshot of BSR meter region"""
+        try:
+            # Try to use configured region
+            if hasattr(self, 'regions') and self.regions and "bsr_location" in self.regions:
+                x, y, w, h = self.regions["bsr_location"]
+                self.bsr_location = (x, y)
+                return self.get_screenshot(x, y, w, h)
+        except (AttributeError, KeyError, ValueError):
+            pass
+            
+        # Fall back to default location if not configured
+        if hasattr(self, 'bsr_location') and self.bsr_location:
+            x, y = self.bsr_location
+            return self.get_screenshot(x, y, 80, 80)  # Default size
+            
+        # Hard-coded fallback
+        return self.get_screenshot(1280, 700, 80, 80)
 
 # Create singleton instance
 wincap = WindowCapture()

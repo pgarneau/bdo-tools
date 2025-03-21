@@ -8,18 +8,20 @@ from common.config_manager import initialize_configuration, init_spells, wait_fo
 
 spells_init = False
 var = utils.Variables()
-var.state = [False, False, False, False, False, False]
+var.state = [False, False, False, False, False, False, False]
 var.last_cast = 0
 
 print("Starting BDO Sorc Tool...")
 
-# Initialize configuration automatically at startup
-# This will wait for BDO to become active if needed
 if not initialize_configuration(wait_for_bdo=True, max_wait_seconds=120):
     print("Configuration initialization failed. Some features may not work correctly.")
 
 def main(context):
-    var.state = pve(context, var.state)
+    if time.time() - var.last_cast > 0.6:
+        var.state = [False, False, False, False, False, False, False]
+
+    var.state = pve(context, var.state, var.last_cast)
+    var.last_cast = time.time()
 
 def reposition_right(context):
     iframe_right.cast(context)
@@ -29,11 +31,11 @@ def reposition_left(context):
 
 def iframe_forward_mmb(context):
     iframe_forward_180_mmb.cast(context)
-    var.state = [False, False, False, False, False, False]
+    var.state = [False, False, False, False, False, False, False]
 
 def iframe_forward_button4(context):
     iframe_forward_180_button4.cast(context)
-    var.state = [False, False, False, False, False, False]
+    var.state = [False, False, False, False, False, False, False]
 
 listener = Listener(debug=False)
 listener.register_keybind('f24', main)
