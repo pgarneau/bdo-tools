@@ -31,6 +31,14 @@ def get_attack_speed():
     
     return speed
 
+# AWAK INTERACTIONS
+# Violation
+# - Always cartian's protection before
+# - 
+# Dark Blades
+# - Need
+
+
 # Awak
 blade_of_darkness = Spell(Vision('blade_of_darkness'), Bind('shift', 'right'), 0.25, 8, get_attack_speed)
 cartian_nightmare = Spell(Vision('cartian_nightmare'), Bind('shift+e', None), 5.8, 15, get_attack_speed)
