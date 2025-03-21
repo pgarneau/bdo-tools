@@ -29,6 +29,26 @@ def get_attack_speed():
     
     return speed
 
+def get_ap_buff():
+    buffs = wincap.get_buffs()
+    if ap_buff.ready(buffs):
+        return True
+    return False
+
+def get_bsr_buff():
+    buffs = wincap.get_buffs()
+    x, y = crit_buff.ready(buffs, count=True)
+    if x and y >= 2:
+        return True
+    return False
+
+def get_ap_while_bsr():
+    buffs = wincap.get_buffs()
+    x, y = ap_buff.ready(buffs, count=True)
+    if x and y >= 2:
+        return True
+    return False
+
 def ebuff_inactive():
     buffs = wincap.get_buffs()
     if e_buff_buff.ready(buffs):
@@ -50,6 +70,7 @@ scornful_slash_cheat = NoCooldownSpell('scornful_slash', Bind('s', 'right', hold
 god_incinerator_accel = Spell(Vision('god_incinerator'), Bind('shift+q', None), 1.3, 8, get_attack_speed)
 god_incinerator = Spell(Vision('god_incinerator'), Bind('shift+q', None), 1.8, 8, get_attack_speed)
 fireborne_rupture = Spell(Vision('fireborne_rupture'), Bind('q', None), 0.5, 4, get_attack_speed)
+fireborne_rupture_qs = Spell(Vision('fireborne_rupture'), Bind('1', None, hotbar=True), 0.5, 4, get_attack_speed)
 e_buff = Spell(Vision('e_buff'), Bind('shift+e', None), 0.5, 4, get_attack_speed)
 bsr_buff = Spell(Vision('100BSR', threshold=0.99), Bind('z', None), 1.0, 60, get_attack_speed)
 
@@ -76,6 +97,8 @@ def shai_buff_active():
 def pve(context):
     if e_buff.ready():
         e_buff.cast(context)
+    elif (get_bsr_buff() and not get_ap_while_bsr() and fireborne_rupture_qs.ready() and ebuff_inactive()) or (not get_ap_buff() and fireborne_rupture_qs.ready() and ebuff_inactive()):
+        fireborne_rupture_qs.cast(context)
     elif bsr_buff.ready() and ebuff_inactive():
         bsr_buff.cast(context)
     elif glorious_advance_1h.ready() and god_incinerator_accel.ready():
