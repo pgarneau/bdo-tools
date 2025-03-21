@@ -164,11 +164,10 @@ def z_buff_active():
 # State[6] = Shadow Eruption Cancel Useable
 def pve(context, state, last_cast):
     # Before combat
-    if time.time() - last_cast >= 1.5:
-        if z_buff.ready() and not e_buff_active():
-            z_buff.cast(context)
-        elif prime_abyssal_vanguard.ready() and not z_buff_active():
-            prime_abyssal_vanguard.cast(context)
+    if time.time() - last_cast >= 1.5 and z_buff.ready() and not e_buff_active():
+        z_buff.cast(context)
+    elif time.time() - last_cast >= 1.5 and prime_abyssal_vanguard.ready() and not z_buff_active():
+        prime_abyssal_vanguard.cast(context)
 
     elif state[0]:
         if not state[5] and not target_dp_debuffed() and prime_violation.ready():
@@ -211,6 +210,7 @@ def pve(context, state, last_cast):
 
     # BUFFS AND DEBUFFS
     elif not cast_speed_active() and not target_dp_debuffed() and claws_vio_combo.ready():
+        print(f"Casting claws and vio at time: {time.time()}")
         if claws_vio_combo.cast(context):
             return [False, False, True, False, False, False, False]
     elif not cast_speed_active() and prime_claws_of_darkness_cancel.ready():

@@ -20,6 +20,7 @@ def main(context):
     if time.time() - var.last_cast > 0.6:
         var.state = [False, False, False, False, False, False, False]
 
+    print(f"Entering main loop at time: {time.time()}")
     var.state = pve(context, var.state, var.last_cast)
     var.last_cast = time.time()
 
