@@ -210,7 +210,6 @@ def pve(context, state, last_cast):
 
     # BUFFS AND DEBUFFS
     elif not cast_speed_active() and not target_dp_debuffed() and claws_vio_combo.ready():
-        print(f"Casting claws and vio at time: {time.time()}")
         if claws_vio_combo.cast(context):
             return [False, False, True, False, False, False, False]
     elif not cast_speed_active() and prime_claws_of_darkness_cancel.ready():
