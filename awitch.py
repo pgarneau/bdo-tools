@@ -1,6 +1,6 @@
 import time
 
-from guardian.awakening import *
+from witch.awakening import *
 import common.utils as utils
 from common.listener import Listener, Context
 from common.spell import Spell

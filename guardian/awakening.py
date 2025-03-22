@@ -34,7 +34,7 @@ def get_ap_buff():
     if ap_buff.ready(buffs):
         return True
     return False
-
+    
 def get_bsr_buff():
     buffs = wincap.get_buffs()
     x, y = crit_buff.ready(buffs, count=True)
@@ -44,8 +44,8 @@ def get_bsr_buff():
 
 def get_ap_while_bsr():
     buffs = wincap.get_buffs()
-    x, y = ap_buff.ready(buffs, count=True)
-    if x and y >= 2:
+    x, y, z = ap_buff.ready(buffs, count=True)
+    if x and y and z>= 3:
         return True
     return False
 
@@ -72,7 +72,7 @@ god_incinerator = Spell(Vision('god_incinerator'), Bind('shift+q', None), 1.8, 8
 fireborne_rupture = Spell(Vision('fireborne_rupture'), Bind('q', None), 0.5, 4, get_attack_speed)
 fireborne_rupture_qs = Spell(Vision('fireborne_rupture'), Bind('1', None, hotbar=True), 0.5, 4, get_attack_speed)
 e_buff = Spell(Vision('e_buff'), Bind('shift+e', None), 0.5, 4, get_attack_speed)
-bsr_buff = BsrConsume(Vision('100BSR', threshold=0.99), Bind('z', None), 1.0, 60, get_attack_speed)
+bsr_buff = Spell(Vision('bsr_100'), Bind('z', None), 1.0, 60, get_attack_speed)
 
 # Combos
 cleansing_flame_combo = Combo([cleansing_flame, flow_to_ashes, scalding_thorn])
@@ -95,10 +95,10 @@ def shai_buff_active():
     return False
 
 def pve(context):
-    if e_buff.ready():
-        e_buff.cast(context)
-    elif (get_bsr_buff() and not get_ap_while_bsr() and fireborne_rupture_qs.ready() and ebuff_inactive()) or (not get_ap_buff() and fireborne_rupture_qs.ready() and ebuff_inactive()):
+    if fireborne_rupture_qs.ready() and ebuff_inactive() and time.time() - fireborne_rupture.shared_data.last_cast >= 7:
         fireborne_rupture_qs.cast(context)
+    elif e_buff.ready():
+        e_buff.cast(context)
     elif bsr_buff.ready() and ebuff_inactive():
         bsr_buff.cast(context)
     elif glorious_advance_1h.ready() and god_incinerator_accel.ready():
